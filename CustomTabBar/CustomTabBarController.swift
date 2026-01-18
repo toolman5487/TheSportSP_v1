@@ -36,7 +36,10 @@ final class CustomTabBarController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        view.bringSubviewToFront(customTabBar)
+        // Only bring to front if needed (optimization)
+        if customTabBar.superview != nil && view.subviews.last !== customTabBar {
+            view.bringSubviewToFront(customTabBar)
+        }
     }
     
     // MARK: - Setup
@@ -73,6 +76,8 @@ final class CustomTabBarController: UIViewController {
     // MARK: - Private Methods
     
     private func showViewController(_ viewController: UIViewController) {
+        guard viewController !== currentViewController else { return }
+        
         if let currentVC = currentViewController {
             currentVC.willMove(toParent: nil)
             currentVC.view.removeFromSuperview()

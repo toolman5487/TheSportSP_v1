@@ -7,16 +7,23 @@
 
 import UIKit
 
-enum TabBarDisplayMode {
+enum TabBarDisplayMode: Equatable {
     case iconOnly
     case iconWithText
 }
 
-struct TabBarItem {
+struct TabBarItem: Equatable {
     let title: String
     let icon: UIImage?
     let selectedIcon: UIImage?
     let displayMode: TabBarDisplayMode
+    
+    static func == (lhs: TabBarItem, rhs: TabBarItem) -> Bool {
+        return lhs.title == rhs.title &&
+               lhs.displayMode == rhs.displayMode &&
+               lhs.icon?.pngData() == rhs.icon?.pngData() &&
+               lhs.selectedIcon?.pngData() == rhs.selectedIcon?.pngData()
+    }
     
     init(
         title: String,

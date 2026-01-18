@@ -17,15 +17,23 @@ final class CustomTabBar: UIView {
     private var items: [TabBarItem] = []
     private var selectedIndex: Int = 0 {
         didSet {
-            updateSelection()
+            guard selectedIndex != oldValue else { return }
+            updateSelection(from: oldValue, to: selectedIndex)
         }
     }
     
     var customHeight: CGFloat = 49 {
         didSet {
+            guard customHeight != oldValue else { return }
             invalidateIntrinsicContentSize()
         }
     }
+    
+    private lazy var feedbackGenerator: UIImpactFeedbackGenerator = {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.prepare()
+        return generator
+    }()
     
     override var intrinsicContentSize: CGSize {
         return CGSize(width: UIView.noIntrinsicMetric, height: customHeight + safeAreaInsets.bottom)
@@ -93,7 +101,9 @@ final class CustomTabBar: UIView {
     // MARK: - Public Methods
     
     func configure(with items: [TabBarItem]) {
+        guard self.items != items else { return }
         self.items = items
+        
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
         for (index, item) in items.enumerated() {
@@ -101,7 +111,11 @@ final class CustomTabBar: UIView {
             stackView.addArrangedSubview(button)
         }
         
-        updateSelection()
+        if selectedIndex >= items.count {
+            selectedIndex = 0
+        } else {
+            updateSelection(from: -1, to: selectedIndex)
+        }
     }
     
     func addItem(_ item: TabBarItem) {
@@ -112,6 +126,7 @@ final class CustomTabBar: UIView {
     
     func removeItem(at index: Int) {
         guard index >= 0 && index < items.count else { return }
+        let oldSelectedIndex = selectedIndex
         items.remove(at: index)
         
         if let button = stackView.arrangedSubviews[index] as? UIButton {
@@ -119,14 +134,17 @@ final class CustomTabBar: UIView {
             button.removeFromSuperview()
         }
         
-        for (idx, subview) in stackView.arrangedSubviews.enumerated() {
-            if let button = subview as? UIButton {
+        // Update tags only for buttons after removed index
+        for idx in index..<stackView.arrangedSubviews.count {
+            if let button = stackView.arrangedSubviews[idx] as? UIButton {
                 button.tag = idx
             }
         }
         
         if selectedIndex >= items.count {
             selectedIndex = 0
+        } else if selectedIndex != oldSelectedIndex {
+            updateSelection(from: oldSelectedIndex, to: selectedIndex)
         }
     }
     
@@ -148,6 +166,14 @@ final class CustomTabBar: UIView {
         button.tag = index
         button.addTarget(self, action: #selector(tabButtonTapped(_:)), for: .touchUpInside)
         
+        // Cache attributed string for iconWithText mode
+        let attributedTitle: AttributedString? = {
+            guard item.displayMode == .iconWithText else { return nil }
+            var attributed = AttributedString(item.title)
+            attributed.font = .systemFont(ofSize: 10)
+            return attributed
+        }()
+        
         switch item.displayMode {
         case .iconOnly:
             configuration.image = item.icon
@@ -155,15 +181,12 @@ final class CustomTabBar: UIView {
             configuration.baseForegroundColor = .systemGray
             button.configuration = configuration
             
-            button.configurationUpdateHandler = { [item] btn in
+            button.configurationUpdateHandler = { [weak self, item] btn in
+                guard self != nil else { return }
                 var config = btn.configuration
-                if btn.isSelected {
-                    config?.image = item.selectedIcon ?? item.icon
-                    config?.baseForegroundColor = .systemBlue
-                } else {
-                    config?.image = item.icon
-                    config?.baseForegroundColor = .systemGray
-                }
+                let isSelected = btn.isSelected
+                config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
+                config?.baseForegroundColor = isSelected ? .systemBlue : .systemGray
                 config?.background.backgroundColor = .clear
                 btn.configuration = config
             }
@@ -172,20 +195,17 @@ final class CustomTabBar: UIView {
             configuration.image = item.icon
             configuration.title = item.title
             configuration.baseForegroundColor = .systemGray
-            var titleAttributedString = AttributedString(item.title)
-            titleAttributedString.font = .systemFont(ofSize: 10)
-            configuration.attributedTitle = titleAttributedString
+            if let attributed = attributedTitle {
+                configuration.attributedTitle = attributed
+            }
             button.configuration = configuration
             
-            button.configurationUpdateHandler = { [item] btn in
+            button.configurationUpdateHandler = { [weak self, item] btn in
+                guard self != nil else { return }
                 var config = btn.configuration
-                if btn.isSelected {
-                    config?.image = item.selectedIcon ?? item.icon
-                    config?.baseForegroundColor = .systemBlue
-                } else {
-                    config?.image = item.icon
-                    config?.baseForegroundColor = .systemGray
-                }
+                let isSelected = btn.isSelected
+                config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
+                config?.baseForegroundColor = isSelected ? .systemBlue : .systemGray
                 config?.background.backgroundColor = .clear
                 btn.configuration = config
             }
@@ -196,24 +216,33 @@ final class CustomTabBar: UIView {
     
     @objc private func tabButtonTapped(_ sender: UIButton) {
         let index = sender.tag
+        guard index != selectedIndex else { return }
         selectedIndex = index
         delegate?.didSelectTab(at: index)
-        
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
+        feedbackGenerator.impactOccurred()
     }
     
-    private func updateSelection() {
+    private func updateSelection(from oldIndex: Int, to newIndex: Int) {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(0.2)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
+        
         for (index, subview) in stackView.arrangedSubviews.enumerated() {
-            if let button = subview as? UIButton {
-                button.isSelected = (index == selectedIndex)
+            guard let button = subview as? UIButton else { continue }
+            let shouldBeSelected = (index == newIndex)
+            
+            // Only update if state actually changes
+            if button.isSelected != shouldBeSelected {
+                button.isSelected = shouldBeSelected
                 
-                UIView.animate(withDuration: 0.2) {
-                    button.transform = index == self.selectedIndex
-                    ? CGAffineTransform(scaleX: 1.1, y: 1.1)
-                    : .identity
+                UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .beginFromCurrentState]) {
+                    button.transform = shouldBeSelected
+                        ? CGAffineTransform(scaleX: 1.1, y: 1.1)
+                        : .identity
                 }
             }
         }
+        
+        CATransaction.commit()
     }
 }
