@@ -13,13 +13,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = UINavigationController(rootViewController: ViewController())
+        
+        let tabBarController = CustomTabBarController()
+        
+        let homeVC = UINavigationController(rootViewController: ViewController())
+        let searchVC = UINavigationController(rootViewController: ViewController())
+        let profileVC = UINavigationController(rootViewController: ViewController())
+        
+        let tabBarItems = [
+            TabBarItem(
+                title: "Home",
+                iconName: "house",
+                selectedIconName: "house.fill",
+                displayMode: .iconWithText
+            ),
+            TabBarItem(
+                title: "Search",
+                iconName: "magnifyingglass",
+                displayMode: .iconOnly
+            ),
+            TabBarItem(
+                title: "Profile",
+                iconName: "person",
+                selectedIconName: "person.fill",
+                displayMode: .iconWithText
+            )
+        ]
+        
+        tabBarController.setViewControllers(
+            [homeVC, searchVC, profileVC],
+            tabBarItems: tabBarItems
+        )
+        
+        window.rootViewController = tabBarController
         window.makeKeyAndVisible()
         self.window = window
     }

@@ -8,10 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		15893EC92F1CE533002E1221 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 15893EC82F1CE533002E1221 /* SnapKit */; };
+		15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893ED92F1D2489002E1221 /* CustomTabBar.swift */; };
+		15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */; };
+		15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDE2F1D2579002E1221 /* TabBarModel.swift */; };
+		15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		15893EAF2F1CD226002E1221 /* TheSportSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSportSP.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		15893ED92F1D2489002E1221 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
+		15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarDelegate.swift; sourceTree = "<group>"; };
+		15893EDE2F1D2579002E1221 /* TabBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarModel.swift; sourceTree = "<group>"; };
+		15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,6 +58,7 @@
 		15893EA62F1CD226002E1221 = {
 			isa = PBXGroup;
 			children = (
+				15893ED82F1D244E002E1221 /* CustomTabBar */,
 				15893EB12F1CD226002E1221 /* TheSportSP */,
 				15893EB02F1CD226002E1221 /* Products */,
 			);
@@ -61,6 +70,17 @@
 				15893EAF2F1CD226002E1221 /* TheSportSP.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		15893ED82F1D244E002E1221 /* CustomTabBar */ = {
+			isa = PBXGroup;
+			children = (
+				15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */,
+				15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */,
+				15893EDE2F1D2579002E1221 /* TabBarModel.swift */,
+				15893ED92F1D2489002E1221 /* CustomTabBar.swift */,
+			);
+			path = CustomTabBar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +161,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
+				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
+				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,
+				15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
