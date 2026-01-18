@@ -134,7 +134,6 @@ final class CustomTabBar: UIView {
             button.removeFromSuperview()
         }
         
-        // Update tags only for buttons after removed index
         for idx in index..<stackView.arrangedSubviews.count {
             if let button = stackView.arrangedSubviews[idx] as? UIButton {
                 button.tag = idx
@@ -166,7 +165,6 @@ final class CustomTabBar: UIView {
         button.tag = index
         button.addTarget(self, action: #selector(tabButtonTapped(_:)), for: .touchUpInside)
         
-        // Cache attributed string for iconWithText mode
         let attributedTitle: AttributedString? = {
             guard item.displayMode == .iconWithText else { return nil }
             var attributed = AttributedString(item.title)
@@ -181,8 +179,7 @@ final class CustomTabBar: UIView {
             configuration.baseForegroundColor = .systemGray
             button.configuration = configuration
             
-            button.configurationUpdateHandler = { [weak self, item] btn in
-                guard self != nil else { return }
+            button.configurationUpdateHandler = { [item] btn in
                 var config = btn.configuration
                 let isSelected = btn.isSelected
                 config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
@@ -200,8 +197,7 @@ final class CustomTabBar: UIView {
             }
             button.configuration = configuration
             
-            button.configurationUpdateHandler = { [weak self, item] btn in
-                guard self != nil else { return }
+            button.configurationUpdateHandler = { [item] btn in
                 var config = btn.configuration
                 let isSelected = btn.isSelected
                 config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
@@ -231,7 +227,6 @@ final class CustomTabBar: UIView {
             guard let button = subview as? UIButton else { continue }
             let shouldBeSelected = (index == newIndex)
             
-            // Only update if state actually changes
             if button.isSelected != shouldBeSelected {
                 button.isSelected = shouldBeSelected
                 
