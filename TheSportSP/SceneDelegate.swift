@@ -13,42 +13,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
-
+        guard let windowScene = scene as? UIWindowScene else { return }
+        
         let window = UIWindow(windowScene: windowScene)
-        
-        let tabBarController = CustomTabBarController()
-        
-        let homeVC = UINavigationController(rootViewController: ViewController())
-        let searchVC = UINavigationController(rootViewController: ViewController())
-        let profileVC = UINavigationController(rootViewController: ViewController())
-        
-        let tabBarItems = [
-            TabBarItem(
-                title: "Home",
-                iconName: "house",
-                selectedIconName: "house.fill",
-                displayMode: .iconWithText
-            ),
-            TabBarItem(
-                title: "Search",
-                iconName: "magnifyingglass",
-                displayMode: .iconOnly
-            ),
-            TabBarItem(
-                title: "Profile",
-                iconName: "person",
-                selectedIconName: "person.fill",
-                displayMode: .iconWithText
-            )
-        ]
-        
-        tabBarController.setViewControllers(
-            [homeVC, searchVC, profileVC],
-            tabBarItems: tabBarItems
-        )
-        
-        window.rootViewController = tabBarController
+        window.rootViewController = TabBarConfiguration.makeTabBarController()
         window.makeKeyAndVisible()
         self.window = window
     }

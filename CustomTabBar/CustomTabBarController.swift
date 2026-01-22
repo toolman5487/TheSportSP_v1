@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+@MainActor
 final class CustomTabBarController: UIViewController {
     
     // MARK: - Properties
@@ -36,7 +37,6 @@ final class CustomTabBarController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // Only bring to front if needed (optimization)
         if customTabBar.superview != nil && view.subviews.last !== customTabBar {
             view.bringSubviewToFront(customTabBar)
         }

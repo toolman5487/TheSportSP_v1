@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+@MainActor
 final class CustomTabBar: UIView {
     
     // MARK: - Properties
@@ -106,7 +107,7 @@ final class CustomTabBar: UIView {
         
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        for (index, item) in items.enumerated() {
+        items.enumerated().forEach { index, item in
             let button = createTabButton(for: item, at: index)
             stackView.addArrangedSubview(button)
         }
@@ -134,10 +135,8 @@ final class CustomTabBar: UIView {
             button.removeFromSuperview()
         }
         
-        for idx in index..<stackView.arrangedSubviews.count {
-            if let button = stackView.arrangedSubviews[idx] as? UIButton {
-                button.tag = idx
-            }
+        (index..<stackView.arrangedSubviews.count).forEach { idx in
+            (stackView.arrangedSubviews[idx] as? UIButton)?.tag = idx
         }
         
         if selectedIndex >= items.count {
@@ -223,18 +222,18 @@ final class CustomTabBar: UIView {
         CATransaction.setAnimationDuration(0.2)
         CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
         
-        for (index, subview) in stackView.arrangedSubviews.enumerated() {
-            guard let button = subview as? UIButton else { continue }
+        stackView.arrangedSubviews.enumerated().forEach { index, subview in
+            guard let button = subview as? UIButton else { return }
             let shouldBeSelected = (index == newIndex)
             
-            if button.isSelected != shouldBeSelected {
-                button.isSelected = shouldBeSelected
-                
-                UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .beginFromCurrentState]) {
-                    button.transform = shouldBeSelected
-                        ? CGAffineTransform(scaleX: 1.1, y: 1.1)
-                        : .identity
-                }
+            guard button.isSelected != shouldBeSelected else { return }
+            
+            button.isSelected = shouldBeSelected
+            
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.allowUserInteraction, .beginFromCurrentState]) {
+                button.transform = shouldBeSelected
+                    ? CGAffineTransform(scaleX: 1.1, y: 1.1)
+                    : .identity
             }
         }
         

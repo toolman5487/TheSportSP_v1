@@ -33,9 +33,7 @@ struct TabBarItem: Equatable {
     ) {
         self.title = title
         self.icon = UIImage(systemName: iconName)
-        self.selectedIcon = selectedIconName != nil 
-            ? UIImage(systemName: selectedIconName!) 
-            : self.icon
+        self.selectedIcon = selectedIconName.flatMap { UIImage(systemName: $0) } ?? self.icon
         self.displayMode = displayMode
     }
 }

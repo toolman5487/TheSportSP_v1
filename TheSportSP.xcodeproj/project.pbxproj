@@ -12,6 +12,8 @@
 		15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */; };
 		15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDE2F1D2579002E1221 /* TabBarModel.swift */; };
 		15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */; };
+		15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F032F226329002E1221 /* TabBarConfiguration.swift */; };
+		15893F072F22689E002E1221 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 15893F062F22689E002E1221 /* SDWebImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,7 @@
 		15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarDelegate.swift; sourceTree = "<group>"; };
 		15893EDE2F1D2579002E1221 /* TabBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarModel.swift; sourceTree = "<group>"; };
 		15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
+		15893F032F226329002E1221 /* TabBarConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15893F072F22689E002E1221 /* SDWebImage in Frameworks */,
 				15893EC92F1CE533002E1221 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +79,7 @@
 		15893ED82F1D244E002E1221 /* CustomTabBar */ = {
 			isa = PBXGroup;
 			children = (
+				15893F032F226329002E1221 /* TabBarConfiguration.swift */,
 				15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */,
 				15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */,
 				15893EDE2F1D2579002E1221 /* TabBarModel.swift */,
@@ -104,6 +109,7 @@
 			name = TheSportSP;
 			packageProductDependencies = (
 				15893EC82F1CE533002E1221 /* SnapKit */,
+				15893F062F22689E002E1221 /* SDWebImage */,
 			);
 			productName = TheSportSP;
 			productReference = 15893EAF2F1CD226002E1221 /* TheSportSP.app */;
@@ -135,6 +141,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				15893EC72F1CE533002E1221 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				15893F052F22689E002E1221 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 15893EB02F1CD226002E1221 /* Products */;
@@ -161,6 +168,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */,
 				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
 				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,
@@ -388,6 +396,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		15893F052F22689E002E1221 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -395,6 +411,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 15893EC72F1CE533002E1221 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		15893F062F22689E002E1221 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 15893F052F22689E002E1221 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
