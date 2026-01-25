@@ -18,7 +18,7 @@ final class CustomTabBarController: UIViewController {
     
     // MARK: - UI Components
     
-    let customTabBar: CustomTabBar = {
+    private(set) var customTabBar: CustomTabBar = {
         let tabBar = CustomTabBar()
         return tabBar
     }()
@@ -40,6 +40,11 @@ final class CustomTabBarController: UIViewController {
         if customTabBar.superview != nil && view.subviews.last !== customTabBar {
             view.bringSubviewToFront(customTabBar)
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        view.bringSubviewToFront(customTabBar)
     }
     
     // MARK: - Setup

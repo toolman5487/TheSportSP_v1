@@ -23,7 +23,7 @@ final class CustomTabBar: UIView {
         }
     }
     
-    var customHeight: CGFloat = 49 {
+    private(set) var customHeight: CGFloat = 49 {
         didSet {
             guard customHeight != oldValue else { return }
             invalidateIntrinsicContentSize()
@@ -46,7 +46,7 @@ final class CustomTabBar: UIView {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.distribution = .fillEqually
-        stack.alignment = .center
+        stack.alignment = .fill
         stack.spacing = 4
         return stack
     }()
@@ -110,13 +110,22 @@ final class CustomTabBar: UIView {
     
     func configure(with items: [TabBarItem]) {
         guard self.items != items else { return }
+        
+        let oldCount = self.items.count
         self.items = items
         
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
-        items.enumerated().forEach { index, item in
-            let button = createTabButton(for: item, at: index)
-            stackView.addArrangedSubview(button)
+        if oldCount == items.count && oldCount > 0 {
+            items.enumerated().forEach { index, item in
+                guard index < stackView.arrangedSubviews.count,
+                      let button = stackView.arrangedSubviews[index] as? UIButton else { return }
+                updateButton(button, with: item, at: index)
+            }
+        } else {
+            stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            items.enumerated().forEach { index, item in
+                let button = createTabButton(for: item, at: index)
+                stackView.addArrangedSubview(button)
+            }
         }
         
         if selectedIndex >= items.count {
@@ -124,6 +133,16 @@ final class CustomTabBar: UIView {
         } else {
             updateSelection(from: -1, to: selectedIndex)
         }
+    }
+    
+    private func updateButton(_ button: UIButton, with item: TabBarItem, at index: Int) {
+        button.tag = index
+        var config = button.configuration ?? UIButton.Configuration.plain()
+        config.image = item.icon
+        if item.displayMode == .iconWithText {
+            config.title = item.title
+        }
+        button.configuration = config
     }
     
     func addItem(_ item: TabBarItem) {
@@ -174,7 +193,7 @@ final class CustomTabBar: UIView {
         let attributedTitle: AttributedString? = {
             guard item.displayMode == .iconWithText else { return nil }
             var attributed = AttributedString(item.title)
-            attributed.font = .systemFont(ofSize: 10)
+            attributed.font = .preferredFont(forTextStyle: .caption1)
             return attributed
         }()
         
@@ -182,35 +201,24 @@ final class CustomTabBar: UIView {
         case .iconOnly:
             configuration.image = item.icon
             configuration.title = nil
-            configuration.baseForegroundColor = .systemGray
-            button.configuration = configuration
-            
-            button.configurationUpdateHandler = { [item] btn in
-                var config = btn.configuration
-                let isSelected = btn.isSelected
-                config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
-                config?.baseForegroundColor = isSelected ? .systemBlue : .systemGray
-                config?.background.backgroundColor = .clear
-                btn.configuration = config
-            }
-            
         case .iconWithText:
             configuration.image = item.icon
             configuration.title = item.title
-            configuration.baseForegroundColor = .systemGray
             if let attributed = attributedTitle {
                 configuration.attributedTitle = attributed
             }
-            button.configuration = configuration
-            
-            button.configurationUpdateHandler = { [item] btn in
-                var config = btn.configuration
-                let isSelected = btn.isSelected
-                config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
-                config?.baseForegroundColor = isSelected ? .systemBlue : .systemGray
-                config?.background.backgroundColor = .clear
-                btn.configuration = config
-            }
+        }
+        
+        configuration.baseForegroundColor = .label
+        button.configuration = configuration
+        
+        button.configurationUpdateHandler = { [item] btn in
+            var config = btn.configuration
+            let isSelected = btn.isSelected
+            config?.image = isSelected ? (item.selectedIcon ?? item.icon) : item.icon
+            config?.baseForegroundColor = isSelected ? .systemBlue : .label
+            config?.background.backgroundColor = .clear
+            btn.configuration = config
         }
         
         return button

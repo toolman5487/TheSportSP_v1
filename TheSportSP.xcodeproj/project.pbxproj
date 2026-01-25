@@ -14,6 +14,7 @@
 		15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */; };
 		15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F032F226329002E1221 /* TabBarConfiguration.swift */; };
 		15893F072F22689E002E1221 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 15893F062F22689E002E1221 /* SDWebImage */; };
+		15893F2A2F266A84002E1221 /* IndexController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F292F266A84002E1221 /* IndexController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +24,7 @@
 		15893EDE2F1D2579002E1221 /* TabBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarModel.swift; sourceTree = "<group>"; };
 		15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		15893F032F226329002E1221 /* TabBarConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConfiguration.swift; sourceTree = "<group>"; };
+		15893F292F266A84002E1221 /* IndexController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -79,13 +81,54 @@
 		15893ED82F1D244E002E1221 /* CustomTabBar */ = {
 			isa = PBXGroup;
 			children = (
-				15893F032F226329002E1221 /* TabBarConfiguration.swift */,
-				15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */,
-				15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */,
-				15893EDE2F1D2579002E1221 /* TabBarModel.swift */,
-				15893ED92F1D2489002E1221 /* CustomTabBar.swift */,
+				15893F282F266924002E1221 /* Model */,
+				15893F262F26690B002E1221 /* Config */,
+				15893F252F266903002E1221 /* Delegate */,
+				15893F242F2668FC002E1221 /* Controller */,
+				15893F232F2668F6002E1221 /* View */,
 			);
 			path = CustomTabBar;
+			sourceTree = "<group>";
+		};
+		15893F232F2668F6002E1221 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				15893ED92F1D2489002E1221 /* CustomTabBar.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		15893F242F2668FC002E1221 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				15893EE72F1D26C6002E1221 /* CustomTabBarController.swift */,
+				15893F292F266A84002E1221 /* IndexController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		15893F252F266903002E1221 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		15893F262F26690B002E1221 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				15893F032F226329002E1221 /* TabBarConfiguration.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		15893F282F266924002E1221 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				15893EDE2F1D2579002E1221 /* TabBarModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */,
+				15893F2A2F266A84002E1221 /* IndexController.swift in Sources */,
 				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
 				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,

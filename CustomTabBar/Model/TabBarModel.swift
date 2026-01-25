@@ -19,10 +19,15 @@ struct TabBarItem: Equatable {
     let displayMode: TabBarDisplayMode
     
     static func == (lhs: TabBarItem, rhs: TabBarItem) -> Bool {
-        return lhs.title == rhs.title &&
-               lhs.displayMode == rhs.displayMode &&
-               lhs.icon?.pngData() == rhs.icon?.pngData() &&
-               lhs.selectedIcon?.pngData() == rhs.selectedIcon?.pngData()
+        guard lhs.title == rhs.title && lhs.displayMode == rhs.displayMode else {
+            return false
+        }
+        
+        if lhs.icon !== rhs.icon || lhs.selectedIcon !== rhs.selectedIcon {
+            return false
+        }
+        
+        return true
     }
     
     init(
