@@ -51,9 +51,10 @@ final class CustomTabBar: UIView {
         return stack
     }()
     
-    private let backgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .systemBackground
+    private let backgroundView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .systemMaterial)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         return view
     }()
     
@@ -61,11 +62,15 @@ final class CustomTabBar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        isOpaque = false
+        backgroundColor = .clear
         setupUI()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        isOpaque = false
+        backgroundColor = .clear
         setupUI()
     }
     
@@ -77,6 +82,8 @@ final class CustomTabBar: UIView {
     // MARK: - Setup
     
     private func setupUI() {
+        backgroundColor = .clear
+        
         addSubview(backgroundView)
         addSubview(stackView)
         

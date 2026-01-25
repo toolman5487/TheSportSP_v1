@@ -53,8 +53,7 @@ final class CustomTabBarController: UIViewController {
         customTabBar.delegate = self
         
         containerView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(customTabBar.snp.top)
+            make.edges.equalToSuperview()
         }
         
         customTabBar.snp.makeConstraints { make in
