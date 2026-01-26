@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Combine
 
 @MainActor
 final class CustomTabBar: UIView {
@@ -15,10 +16,26 @@ final class CustomTabBar: UIView {
     
     weak var delegate: CustomTabBarDelegate?
     
+    var viewModel: TabBarViewModel? {
+        didSet {
+            bindViewModel()
+            if let viewModel = viewModel,
+               let tab = viewModel.tab(at: selectedIndex) {
+                viewModel.selectedTab = tab
+            }
+        }
+    }
+    
+    private var cancellables = Set<AnyCancellable>()
+    
     private var items: [TabBarItem] = []
     private var selectedIndex: Int = 0 {
         didSet {
             guard selectedIndex != oldValue else { return }
+            if let viewModel = viewModel,
+               let tab = viewModel.tab(at: selectedIndex) {
+                viewModel.selectedTab = tab
+            }
             updateSelection(from: oldValue, to: selectedIndex)
         }
     }
@@ -29,6 +46,8 @@ final class CustomTabBar: UIView {
             invalidateIntrinsicContentSize()
         }
     }
+    
+    private var pulseAnimationKeys: [Int: String] = [:]
     
     private lazy var feedbackGenerator: UIImpactFeedbackGenerator = {
         let generator = UIImpactFeedbackGenerator(style: .light)
@@ -80,6 +99,35 @@ final class CustomTabBar: UIView {
     }
     
     // MARK: - Setup
+    
+    private func bindViewModel() {
+        cancellables.removeAll()
+        
+        guard let viewModel = viewModel else { return }
+        
+        viewModel.$visitedTabs
+            .sink { [weak self] _ in
+                self?.updatePulseAnimationsForAllButtons()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$notifications
+            .sink { [weak self] _ in
+                self?.updatePulseAnimationsForAllButtons()
+            }
+            .store(in: &cancellables)
+        
+        viewModel.$selectedTab
+            .dropFirst()
+            .sink { [weak self] tab in
+                guard let self = self,
+                      let tab = tab,
+                      let index = self.viewModel?.index(for: tab),
+                      index != self.selectedIndex else { return }
+                self.selectedIndex = index
+            }
+            .store(in: &cancellables)
+    }
     
     private func setupUI() {
         backgroundColor = .clear
@@ -133,6 +181,10 @@ final class CustomTabBar: UIView {
         } else {
             updateSelection(from: -1, to: selectedIndex)
         }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.updatePulseAnimationsForAllButtons()
+        }
     }
     
     private func updateButton(_ button: UIButton, with item: TabBarItem, at index: Int) {
@@ -157,9 +209,16 @@ final class CustomTabBar: UIView {
         items.remove(at: index)
         
         if let button = stackView.arrangedSubviews[index] as? UIButton {
+            stopContinuousPulseAnimation(on: button, at: index)
             stackView.removeArrangedSubview(button)
             button.removeFromSuperview()
         }
+        
+        pulseAnimationKeys.removeValue(forKey: index)
+        let updatedKeys = Dictionary(uniqueKeysWithValues: pulseAnimationKeys.compactMap { key, value in
+            key > index ? (key - 1, value) : nil
+        })
+        pulseAnimationKeys = updatedKeys
         
         (index..<stackView.arrangedSubviews.count).forEach { idx in
             (stackView.arrangedSubviews[idx] as? UIButton)?.tag = idx
@@ -227,6 +286,7 @@ final class CustomTabBar: UIView {
     @objc private func tabButtonTapped(_ sender: UIButton) {
         let index = sender.tag
         guard index != selectedIndex else { return }
+        
         selectedIndex = index
         delegate?.didSelectTab(at: index)
         feedbackGenerator.impactOccurred()
@@ -250,8 +310,70 @@ final class CustomTabBar: UIView {
                     ? CGAffineTransform(scaleX: 1.1, y: 1.1)
                     : .identity
             }
+            
+            if let viewModel = viewModel, viewModel.shouldPulse(at: index) {
+                if shouldBeSelected {
+                    stopContinuousPulseAnimation(on: button, at: index)
+                } else {
+                    startContinuousPulseAnimation(on: button, at: index)
+                }
+            } else {
+                stopContinuousPulseAnimation(on: button, at: index)
+            }
         }
         
         CATransaction.commit()
+    }
+    
+    private func performPulseAnimation(on button: UIButton) {
+        let pulseAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
+        pulseAnimation.values = [1.0, 1.2, 1.0]
+        pulseAnimation.duration = 0.3
+        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        button.layer.add(pulseAnimation, forKey: "pulse")
+    }
+    
+    private func startContinuousPulseAnimation(on button: UIButton, at index: Int) {
+        stopContinuousPulseAnimation(on: button, at: index)
+        
+        guard let imageView = button.imageView else { return }
+        
+        let pulseAnimation = CABasicAnimation(keyPath: "transform.scale")
+        pulseAnimation.fromValue = 1.0
+        pulseAnimation.toValue = 1.15
+        pulseAnimation.duration = 0.8
+        pulseAnimation.autoreverses = true
+        pulseAnimation.repeatCount = .greatestFiniteMagnitude
+        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        
+        let animationKey = "continuousPulse_\(index)"
+        pulseAnimationKeys[index] = animationKey
+        imageView.layer.add(pulseAnimation, forKey: animationKey)
+    }
+    
+    private func stopContinuousPulseAnimation(on button: UIButton, at index: Int) {
+        if let animationKey = pulseAnimationKeys[index],
+           let imageView = button.imageView {
+            imageView.layer.removeAnimation(forKey: animationKey)
+            pulseAnimationKeys.removeValue(forKey: index)
+        }
+    }
+    
+    private func updatePulseAnimationsForAllButtons() {
+        guard let viewModel = viewModel else { return }
+        
+        stackView.arrangedSubviews.enumerated().forEach { index, subview in
+            guard let button = subview as? UIButton,
+                  index < items.count else { return }
+            
+            let isSelected = button.isSelected
+            let shouldAnimate = viewModel.shouldPulse(at: index) && !isSelected
+            
+            if shouldAnimate {
+                startContinuousPulseAnimation(on: button, at: index)
+            } else {
+                stopContinuousPulseAnimation(on: button, at: index)
+            }
+        }
     }
 }

@@ -12,14 +12,20 @@ enum TabBarDisplayMode: Equatable {
     case iconWithText
 }
 
+enum TabBarAnimationStyle {
+    case none
+    case pulse
+}
+
 struct TabBarItem: Equatable {
     let title: String
     let icon: UIImage?
     let selectedIcon: UIImage?
     let displayMode: TabBarDisplayMode
+    let animationStyle: TabBarAnimationStyle
     
     static func == (lhs: TabBarItem, rhs: TabBarItem) -> Bool {
-        guard lhs.title == rhs.title && lhs.displayMode == rhs.displayMode else {
+        guard lhs.title == rhs.title && lhs.displayMode == rhs.displayMode && lhs.animationStyle == rhs.animationStyle else {
             return false
         }
         
@@ -34,11 +40,13 @@ struct TabBarItem: Equatable {
         title: String,
         iconName: String,
         selectedIconName: String? = nil,
-        displayMode: TabBarDisplayMode = .iconWithText
+        displayMode: TabBarDisplayMode = .iconWithText,
+        animationStyle: TabBarAnimationStyle = .none
     ) {
         self.title = title
         self.icon = UIImage(systemName: iconName)
         self.selectedIcon = selectedIconName.flatMap { UIImage(systemName: $0) } ?? self.icon
         self.displayMode = displayMode
+        self.animationStyle = animationStyle
     }
 }

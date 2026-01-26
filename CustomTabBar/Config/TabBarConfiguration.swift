@@ -19,7 +19,7 @@ enum TabType {
                 title: "Home",
                 iconName: "house",
                 selectedIconName: "house.fill",
-                displayMode: .iconWithText
+                displayMode: .iconOnly
             )
         case .search:
             return TabBarItem(
@@ -32,7 +32,8 @@ enum TabType {
                 title: "Profile",
                 iconName: "person",
                 selectedIconName: "person.fill",
-                displayMode: .iconWithText
+                displayMode: .iconOnly,
+                animationStyle: .pulse
             )
         }
     }
@@ -50,7 +51,7 @@ struct TabBarConfiguration {
         let viewControllers = tabs.map { $0.makeViewController() }
         let tabBarItems = tabs.map { $0.item }
         
-        tabBarController.setViewControllers(viewControllers, tabBarItems: tabBarItems)
+        tabBarController.setViewControllers(viewControllers, tabBarItems: tabBarItems, tabTypes: tabs)
         return tabBarController
     }
 }

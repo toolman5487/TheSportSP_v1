@@ -13,6 +13,7 @@ final class CustomTabBarController: UIViewController {
     
     // MARK: - Properties
     
+    private let viewModel = TabBarViewModel()
     private var viewControllers: [UIViewController] = []
     private var currentViewController: UIViewController?
     
@@ -56,6 +57,7 @@ final class CustomTabBarController: UIViewController {
         view.addSubview(customTabBar)
         
         customTabBar.delegate = self
+        customTabBar.viewModel = viewModel
         
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -68,9 +70,14 @@ final class CustomTabBarController: UIViewController {
     
     // MARK: - Public Methods
     
-    func setViewControllers(_ viewControllers: [UIViewController], tabBarItems: [TabBarItem]) {
+    func setViewControllers(_ viewControllers: [UIViewController], tabBarItems: [TabBarItem], tabTypes: [TabType]) {
         self.viewControllers = viewControllers
+        viewModel.configure(with: tabTypes)
         customTabBar.configure(with: tabBarItems)
+        
+        if let firstTab = tabTypes.first {
+            viewModel.selectedTab = firstTab
+        }
         
         if let firstVC = viewControllers.first {
             showViewController(firstVC)
