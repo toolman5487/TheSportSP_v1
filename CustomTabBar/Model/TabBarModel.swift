@@ -7,20 +7,39 @@
 
 import UIKit
 
-enum TabBarDisplayMode: Equatable {
+// MARK: - Appearance
+
+enum TabBarAppearance {
+    static let selectedColor: UIColor = .systemBlue
+    static let normalColor: UIColor = .label
+    static let animationPrimaryColor: UIColor = .systemRed
+    static let separatorColor: UIColor = .separator
+    static let selectionScale: CGFloat = 1.1
+    static let animationDuration: TimeInterval = 0.2
+    static let pulseScale: CGFloat = 1.15
+    static let pulseDuration: TimeInterval = 0.8
+}
+
+// MARK: - Display Mode
+
+enum TabBarDisplayMode: Equatable, Sendable {
     case iconOnly
     case iconWithText
 }
 
-enum TabBarAnimationKind: Equatable {
+// MARK: - Animation
+
+enum TabBarAnimationKind: Equatable, Sendable {
     case pulse
     case colorChange
 }
 
-enum TabBarAnimationStyle: Equatable {
+enum TabBarAnimationStyle: Equatable, Sendable {
     case none
     case animated(TabBarAnimationKind)
 }
+
+// MARK: - Tab Bar Item
 
 struct TabBarItem: Equatable {
     let title: String

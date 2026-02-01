@@ -38,41 +38,34 @@ final class TabBarViewModel: ObservableObject {
     
     // MARK: - Animation State
     
-    /// 正在執行變色動畫的 tab（由 View 在開始/停止時更新，completion 依此判斷是否繼續）
-    private(set) var runningColorChangeAnimationTabs: Set<TabType> = []
+    private(set) var colorAnimatingTabs: Set<TabType> = []
     
-    func markColorChangeAnimationStarted(for tab: TabType) {
-        runningColorChangeAnimationTabs.insert(tab)
+    func startColorAnimation(for tab: TabType) {
+        colorAnimatingTabs.insert(tab)
     }
     
-    func markColorChangeAnimationStopped(for tab: TabType) {
-        runningColorChangeAnimationTabs.remove(tab)
+    func stopColorAnimation(for tab: TabType) {
+        colorAnimatingTabs.remove(tab)
     }
     
-    func isColorChangeAnimationRunning(for tab: TabType) -> Bool {
-        runningColorChangeAnimationTabs.contains(tab)
+    func isColorAnimating(_ tab: TabType) -> Bool {
+        colorAnimatingTabs.contains(tab)
     }
     
     func markAsVisited(_ tab: TabType) {
         visitedTabs.insert(tab)
     }
     
-    func shouldAnimateTab(at index: Int) -> Bool {
-        guard index >= 0 && index < tabTypes.count else { return false }
-        let tab = tabTypes[index]
-        return shouldAnimateTab(for: tab)
+    func needsAnimation(at index: Int) -> Bool {
+        guard let tab = tab(at: index) else { return false }
+        return needsAnimation(for: tab)
     }
     
-    func shouldAnimateTab(for tab: TabType) -> Bool {
+    func needsAnimation(for tab: TabType) -> Bool {
         let item = tab.item
-        let hasNotification = notifications.contains(tab)
-        let shouldAnimateForUnvisited: Bool
-        if case .animated = item.animationStyle {
-            shouldAnimateForUnvisited = !visitedTabs.contains(tab)
-        } else {
-            shouldAnimateForUnvisited = false
-        }
-        return hasNotification || shouldAnimateForUnvisited
+        guard case .animated = item.animationStyle else { return notifications.contains(tab) }
+        let isUnvisited = !visitedTabs.contains(tab)
+        return isUnvisited || notifications.contains(tab)
     }
     
     func animationKind(for tab: TabType) -> TabBarAnimationKind? {

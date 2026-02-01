@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum TabType {
+enum TabType: Sendable {
     case home
     case search
     case profile
