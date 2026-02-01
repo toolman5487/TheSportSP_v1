@@ -14,7 +14,11 @@ final class CustomTabBarController: UIViewController {
     // MARK: - Properties
     
     private let viewModel = TabBarViewModel()
-    private var viewControllers: [UIViewController] = []
+    
+    private var viewControllerFactories: [() -> UIViewController] = []
+    
+    private var cachedViewControllers: [Int: UIViewController] = [:]
+    
     private var currentViewController: UIViewController?
     
     // MARK: - UI Components
@@ -38,13 +42,6 @@ final class CustomTabBarController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if customTabBar.superview != nil && view.subviews.last !== customTabBar {
-            view.bringSubviewToFront(customTabBar)
-        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         view.bringSubviewToFront(customTabBar)
     }
     
@@ -70,38 +67,52 @@ final class CustomTabBarController: UIViewController {
     
     // MARK: - Public Methods
     
-    func setViewControllers(_ viewControllers: [UIViewController], tabBarItems: [TabBarItem], tabTypes: [TabType]) {
-        self.viewControllers = viewControllers
+    func setViewControllers(factories: [() -> UIViewController], tabBarItems: [TabBarItem], tabTypes: [TabType]) {
+        self.viewControllerFactories = factories
         viewModel.configure(with: tabTypes)
         customTabBar.configure(with: tabBarItems)
         
         if let firstTab = tabTypes.first {
             viewModel.selectedTab = firstTab
-        }
-        
-        if let firstVC = viewControllers.first {
-            showViewController(firstVC)
+            
+            if let firstVC = getOrCreateViewController(at: 0) {
+                showViewController(firstVC)
+            }
         }
     }
     
     // MARK: - Private Methods
     
+    private func getOrCreateViewController(at index: Int) -> UIViewController? {
+        if let cachedVC = cachedViewControllers[index] {
+            return cachedVC
+        }
+        
+        guard index >= 0 && index < viewControllerFactories.count else { return nil }
+        let factory = viewControllerFactories[index]
+        let newVC = factory()
+        cachedViewControllers[index] = newVC
+        
+        addChild(newVC)
+        containerView.addSubview(newVC.view)
+        newVC.view.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        newVC.didMove(toParent: self)
+        
+        newVC.view.isHidden = true
+        
+        return newVC
+    }
+    
     private func showViewController(_ viewController: UIViewController) {
         guard viewController !== currentViewController else { return }
         
-        if let currentVC = currentViewController {
-            currentVC.willMove(toParent: nil)
-            currentVC.view.removeFromSuperview()
-            currentVC.removeFromParent()
-        }
+        currentViewController?.view.isHidden = true
         
-        addChild(viewController)
-        containerView.addSubview(viewController.view)
-        viewController.view.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        viewController.view.isHidden = false
+        containerView.bringSubviewToFront(viewController.view)
         
-        viewController.didMove(toParent: self)
         currentViewController = viewController
     }
 }
@@ -110,9 +121,7 @@ final class CustomTabBarController: UIViewController {
 
 extension CustomTabBarController: CustomTabBarDelegate {
     func didSelectTab(at index: Int) {
-        guard index >= 0 && index < viewControllers.count else { return }
-        
-        let viewController = viewControllers[index]
+        guard let viewController = getOrCreateViewController(at: index) else { return }
         
         if viewController === currentViewController {
             if let refreshable = viewController as? TabBarRefreshable {
@@ -128,6 +137,7 @@ extension CustomTabBarController: CustomTabBarDelegate {
 
 // MARK: - TabBarRefreshable Protocol
 
+@MainActor
 protocol TabBarRefreshable {
     func refreshContent()
 }

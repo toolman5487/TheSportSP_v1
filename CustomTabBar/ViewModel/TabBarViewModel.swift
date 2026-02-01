@@ -62,10 +62,12 @@ final class TabBarViewModel: ObservableObject {
     }
     
     func needsAnimation(for tab: TabType) -> Bool {
-        let item = tab.item
-        guard case .animated = item.animationStyle else { return notifications.contains(tab) }
-        let isUnvisited = !visitedTabs.contains(tab)
-        return isUnvisited || notifications.contains(tab)
+        // 如果有通知，無論如何都要動畫
+        if notifications.contains(tab) { return true }
+        
+        // 如果沒有通知，檢查是否為 animated 類型且未訪問
+        guard case .animated = tab.item.animationStyle else { return false }
+        return !visitedTabs.contains(tab)
     }
     
     func animationKind(for tab: TabType) -> TabBarAnimationKind? {

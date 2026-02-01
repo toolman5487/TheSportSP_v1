@@ -49,10 +49,14 @@ struct TabBarConfiguration {
     
     static func makeTabBarController() -> CustomTabBarController {
         let tabBarController = CustomTabBarController()
-        let viewControllers = tabs.map { $0.makeViewController() }
+        
+        let factories: [() -> UIViewController] = tabs.map { tab in
+            return { tab.makeViewController() }
+        }
+        
         let tabBarItems = tabs.map { $0.item }
         
-        tabBarController.setViewControllers(viewControllers, tabBarItems: tabBarItems, tabTypes: tabs)
+        tabBarController.setViewControllers(factories: factories, tabBarItems: tabBarItems, tabTypes: tabs)
         return tabBarController
     }
 }

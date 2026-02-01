@@ -106,7 +106,6 @@ final class CustomTabBar: UIView {
         guard let viewModel = viewModel else { return }
         
         Publishers.CombineLatest(viewModel.$visitedTabs, viewModel.$notifications)
-            .debounce(for: .milliseconds(16), scheduler: DispatchQueue.main)
             .sink { [weak self] _, _ in
                 self?.updateTabAnimationsForAllButtons()
             }
@@ -209,11 +208,13 @@ final class CustomTabBar: UIView {
             button.removeFromSuperview()
         }
         
-        pulseAnimationKeys.removeValue(forKey: index)
-        let updatedKeys = Dictionary(uniqueKeysWithValues: pulseAnimationKeys.compactMap { key, value in
-            key > index ? (key - 1, value) : nil
-        })
-        pulseAnimationKeys = updatedKeys
+        if !pulseAnimationKeys.isEmpty {
+            pulseAnimationKeys.removeValue(forKey: index)
+            let updatedKeys = Dictionary(uniqueKeysWithValues: pulseAnimationKeys.compactMap { key, value in
+                key > index ? (key - 1, value) : (key, value)
+            })
+            pulseAnimationKeys = updatedKeys
+        }
         
         if let tab = viewModel?.tab(at: index) {
             viewModel?.stopColorAnimation(for: tab)
@@ -319,7 +320,10 @@ final class CustomTabBar: UIView {
                     : .identity
             }
             
-            if let viewModel = viewModel, viewModel.needsAnimation(at: index) {
+            guard let viewModel = viewModel else { return }
+            let needsAnim = viewModel.needsAnimation(at: index)
+            
+            if needsAnim {
                 if shouldBeSelected {
                     stopAnimation(on: button, at: index)
                 } else if let tab = viewModel.tab(at: index), let kind = viewModel.animationKind(for: tab) {
@@ -333,19 +337,14 @@ final class CustomTabBar: UIView {
         CATransaction.commit()
     }
     
-    private func performPulseAnimation(on button: UIButton) {
-        let pulseAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
-        pulseAnimation.values = [1.0, 1.2, 1.0]
-        pulseAnimation.duration = 0.3
-        pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        button.layer.add(pulseAnimation, forKey: "pulse")
-    }
-    
     private func startContinuousPulseAnimation(on button: UIButton, at index: Int) {
         guard pulseAnimationKeys[index] == nil else { return }
         stopContinuousColorChangeAnimation(on: button, at: index)
         
         guard let imageView = button.imageView else { return }
+        
+        let animationKey = "continuousPulse_\(index)"
+        pulseAnimationKeys[index] = animationKey
         
         let pulseAnimation = CABasicAnimation(keyPath: "transform.scale")
         pulseAnimation.fromValue = 1.0
@@ -355,8 +354,6 @@ final class CustomTabBar: UIView {
         pulseAnimation.repeatCount = .greatestFiniteMagnitude
         pulseAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         
-        let animationKey = "continuousPulse_\(index)"
-        pulseAnimationKeys[index] = animationKey
         imageView.layer.add(pulseAnimation, forKey: animationKey)
     }
     
@@ -416,7 +413,6 @@ final class CustomTabBar: UIView {
             let shouldAnimate = viewModel.needsAnimation(at: index) && !isSelected
             
             if shouldAnimate, let tab = viewModel.tab(at: index), let kind = viewModel.animationKind(for: tab) {
-                guard !isAnimationRunning(kind: kind, at: index, tab: tab) else { return }
                 startAnimation(for: kind, on: button, at: index)
             } else {
                 stopAnimation(on: button, at: index)
@@ -424,12 +420,4 @@ final class CustomTabBar: UIView {
         }
     }
     
-    private func isAnimationRunning(kind: TabBarAnimationKind, at index: Int, tab: TabType) -> Bool {
-        switch kind {
-        case .pulse:
-            return pulseAnimationKeys[index] != nil
-        case .colorChange:
-            return viewModel?.isColorAnimating(tab) == true
-        }
-    }
 }
