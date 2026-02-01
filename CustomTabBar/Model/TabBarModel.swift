@@ -41,7 +41,7 @@ enum TabBarAnimationStyle: Equatable, Sendable {
 
 // MARK: - Tab Bar Item
 
-struct TabBarItem: Equatable {
+struct TabBarItem: Equatable, Sendable {
     let title: String
     let icon: UIImage?
     let selectedIcon: UIImage?

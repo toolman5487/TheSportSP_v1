@@ -9,7 +9,8 @@ import UIKit
 
 enum TabType: Sendable {
     case home
-    case search
+    case events
+    case leagues
     case profile
     
     var item: TabBarItem {
@@ -21,20 +22,26 @@ enum TabType: Sendable {
                 selectedIconName: "house.fill",
                 displayMode: .iconOnly
             )
-        case .search:
+        case .events:
             return TabBarItem(
-                title: "Search",
-                iconName: "magnifyingglass",
-                displayMode: .iconOnly,
-                animationStyle: .animated(.colorChange)
+                title: "Events",
+                iconName: "calendar",
+                selectedIconName: "calendar.fill",
+                displayMode: .iconOnly
+            )
+        case .leagues:
+            return TabBarItem(
+                title: "Leagues",
+                iconName: "person.3",
+                selectedIconName: "person.3.fill",
+                displayMode: .iconOnly
             )
         case .profile:
             return TabBarItem(
                 title: "Profile",
                 iconName: "person",
                 selectedIconName: "person.fill",
-                displayMode: .iconOnly,
-                animationStyle: .animated(.pulse)
+                displayMode: .iconOnly
             )
         }
     }
@@ -45,7 +52,7 @@ enum TabType: Sendable {
 }
 
 struct TabBarConfiguration {
-    static let tabs: [TabType] = [.home, .search, .profile]
+    static let tabs: [TabType] = [.home, .events, .leagues, .profile]
     
     static func makeTabBarController() -> CustomTabBarController {
         let tabBarController = CustomTabBarController()
