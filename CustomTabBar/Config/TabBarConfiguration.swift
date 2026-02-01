@@ -25,7 +25,8 @@ enum TabType {
             return TabBarItem(
                 title: "Search",
                 iconName: "magnifyingglass",
-                displayMode: .iconOnly
+                displayMode: .iconOnly,
+                animationStyle: .animated(.colorChange)
             )
         case .profile:
             return TabBarItem(
@@ -33,7 +34,7 @@ enum TabType {
                 iconName: "person",
                 selectedIconName: "person.fill",
                 displayMode: .iconOnly,
-                animationStyle: .pulse
+                animationStyle: .animated(.pulse)
             )
         }
     }

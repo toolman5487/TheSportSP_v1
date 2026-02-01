@@ -12,9 +12,14 @@ enum TabBarDisplayMode: Equatable {
     case iconWithText
 }
 
-enum TabBarAnimationStyle {
-    case none
+enum TabBarAnimationKind: Equatable {
     case pulse
+    case colorChange
+}
+
+enum TabBarAnimationStyle: Equatable {
+    case none
+    case animated(TabBarAnimationKind)
 }
 
 struct TabBarItem: Equatable {

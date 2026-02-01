@@ -107,13 +107,13 @@ final class CustomTabBar: UIView {
         
         viewModel.$visitedTabs
             .sink { [weak self] _ in
-                self?.updatePulseAnimationsForAllButtons()
+                self?.updateTabAnimationsForAllButtons()
             }
             .store(in: &cancellables)
         
         viewModel.$notifications
             .sink { [weak self] _ in
-                self?.updatePulseAnimationsForAllButtons()
+                self?.updateTabAnimationsForAllButtons()
             }
             .store(in: &cancellables)
         
@@ -183,7 +183,7 @@ final class CustomTabBar: UIView {
         }
         
         DispatchQueue.main.async { [weak self] in
-            self?.updatePulseAnimationsForAllButtons()
+            self?.updateTabAnimationsForAllButtons()
         }
     }
     
@@ -209,7 +209,7 @@ final class CustomTabBar: UIView {
         items.remove(at: index)
         
         if let button = stackView.arrangedSubviews[index] as? UIButton {
-            stopContinuousPulseAnimation(on: button, at: index)
+            stopAnimation(on: button, at: index)
             stackView.removeArrangedSubview(button)
             button.removeFromSuperview()
         }
@@ -219,6 +219,10 @@ final class CustomTabBar: UIView {
             key > index ? (key - 1, value) : nil
         })
         pulseAnimationKeys = updatedKeys
+        
+        if let tab = viewModel?.tab(at: index) {
+            viewModel?.markColorChangeAnimationStopped(for: tab)
+        }
         
         (index..<stackView.arrangedSubviews.count).forEach { idx in
             (stackView.arrangedSubviews[idx] as? UIButton)?.tag = idx
@@ -311,14 +315,14 @@ final class CustomTabBar: UIView {
                     : .identity
             }
             
-            if let viewModel = viewModel, viewModel.shouldPulse(at: index) {
+            if let viewModel = viewModel, viewModel.shouldAnimateTab(at: index) {
                 if shouldBeSelected {
-                    stopContinuousPulseAnimation(on: button, at: index)
-                } else {
-                    startContinuousPulseAnimation(on: button, at: index)
+                    stopAnimation(on: button, at: index)
+                } else if let tab = viewModel.tab(at: index), let kind = viewModel.animationKind(for: tab) {
+                    startAnimation(for: kind, on: button, at: index)
                 }
             } else {
-                stopContinuousPulseAnimation(on: button, at: index)
+                stopAnimation(on: button, at: index)
             }
         }
         
@@ -359,7 +363,54 @@ final class CustomTabBar: UIView {
         }
     }
     
-    private func updatePulseAnimationsForAllButtons() {
+    private func startContinuousColorChangeAnimation(on button: UIButton, at index: Int) {
+        stopContinuousColorChangeAnimation(on: button, at: index)
+        
+        guard let viewModel = viewModel, let tab = viewModel.tab(at: index) else { return }
+        viewModel.markColorChangeAnimationStarted(for: tab)
+        
+        let redPrimary = UIColor.systemRed
+        let redSecondary = UIColor.systemRed.withAlphaComponent(0.5)
+        button.imageView?.tintColor = redPrimary
+        
+        func animate(to color: UIColor) {
+            guard self.viewModel?.isColorChangeAnimationRunning(for: tab) == true else { return }
+            
+            UIView.animate(withDuration: 1.0, delay: 0, options: [.allowUserInteraction, .curveEaseInOut]) {
+                button.imageView?.tintColor = color
+            } completion: { _ in
+                guard self.viewModel?.isColorChangeAnimationRunning(for: tab) == true else { return }
+                let nextColor: UIColor = color == redPrimary ? redSecondary : redPrimary
+                animate(to: nextColor)
+            }
+        }
+        
+        animate(to: redPrimary)
+    }
+    
+    private func stopContinuousColorChangeAnimation(on button: UIButton, at index: Int) {
+        if let tab = viewModel?.tab(at: index) {
+            viewModel?.markColorChangeAnimationStopped(for: tab)
+        }
+        let color: UIColor = button.isSelected ? .systemBlue : .label
+        button.imageView?.tintColor = color
+    }
+    
+    private func startAnimation(for kind: TabBarAnimationKind, on button: UIButton, at index: Int) {
+        switch kind {
+        case .pulse:
+            startContinuousPulseAnimation(on: button, at: index)
+        case .colorChange:
+            startContinuousColorChangeAnimation(on: button, at: index)
+        }
+    }
+    
+    private func stopAnimation(on button: UIButton, at index: Int) {
+        stopContinuousPulseAnimation(on: button, at: index)
+        stopContinuousColorChangeAnimation(on: button, at: index)
+    }
+    
+    private func updateTabAnimationsForAllButtons() {
         guard let viewModel = viewModel else { return }
         
         stackView.arrangedSubviews.enumerated().forEach { index, subview in
@@ -367,12 +418,12 @@ final class CustomTabBar: UIView {
                   index < items.count else { return }
             
             let isSelected = button.isSelected
-            let shouldAnimate = viewModel.shouldPulse(at: index) && !isSelected
+            let shouldAnimate = viewModel.shouldAnimateTab(at: index) && !isSelected
             
-            if shouldAnimate {
-                startContinuousPulseAnimation(on: button, at: index)
+            if shouldAnimate, let tab = viewModel.tab(at: index), let kind = viewModel.animationKind(for: tab) {
+                startAnimation(for: kind, on: button, at: index)
             } else {
-                stopContinuousPulseAnimation(on: button, at: index)
+                stopAnimation(on: button, at: index)
             }
         }
     }
