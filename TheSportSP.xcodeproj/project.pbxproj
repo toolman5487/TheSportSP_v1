@@ -16,6 +16,8 @@
 		15893F072F22689E002E1221 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 15893F062F22689E002E1221 /* SDWebImage */; };
 		15893F2A2F266A84002E1221 /* IndexController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F292F266A84002E1221 /* IndexController.swift */; };
 		15893F322F27B5C5002E1221 /* TabBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F302F27B5C5002E1221 /* TabBarViewModel.swift */; };
+		15893F362F322843002E1221 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F352F322843002E1221 /* UIColorExtension.swift */; };
+		15893F392F322E92002E1221 /* ColorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F382F322E92002E1221 /* ColorConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		15893F032F226329002E1221 /* TabBarConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarConfiguration.swift; sourceTree = "<group>"; };
 		15893F292F266A84002E1221 /* IndexController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexController.swift; sourceTree = "<group>"; };
 		15893F302F27B5C5002E1221 /* TabBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewModel.swift; sourceTree = "<group>"; };
+		15893F352F322843002E1221 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		15893F382F322E92002E1221 /* ColorConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -66,6 +70,8 @@
 		15893EA62F1CD226002E1221 = {
 			isa = PBXGroup;
 			children = (
+				15893F372F322E76002E1221 /* Config */,
+				15893F332F322809002E1221 /* Extension */,
 				15893F2D2F27B1D8002E1221 /* Base */,
 				15893ED82F1D244E002E1221 /* CustomTabBar */,
 				15893EB12F1CD226002E1221 /* TheSportSP */,
@@ -166,6 +172,30 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
+		15893F332F322809002E1221 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				15893F342F322811002E1221 /* UIColor */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		15893F342F322811002E1221 /* UIColor */ = {
+			isa = PBXGroup;
+			children = (
+				15893F352F322843002E1221 /* UIColorExtension.swift */,
+			);
+			path = UIColor;
+			sourceTree = "<group>";
+		};
+		15893F372F322E76002E1221 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				15893F382F322E92002E1221 /* ColorConfig.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -251,6 +281,8 @@
 				15893F2A2F266A84002E1221 /* IndexController.swift in Sources */,
 				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
+				15893F392F322E92002E1221 /* ColorConfig.swift in Sources */,
+				15893F362F322843002E1221 /* UIColorExtension.swift in Sources */,
 				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,
 				15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */,
 			);

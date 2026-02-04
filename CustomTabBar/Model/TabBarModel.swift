@@ -10,7 +10,7 @@ import UIKit
 // MARK: - Appearance
 
 enum TabBarAppearance {
-    static let selectedColor: UIColor = .systemBlue
+    static let selectedColor: UIColor = ColorConfig.themeColor
     static let normalColor: UIColor = .label
     static let animationPrimaryColor: UIColor = .systemRed
     static let separatorColor: UIColor = .separator

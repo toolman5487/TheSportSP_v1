@@ -16,6 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
+        window.tintColor = ColorConfig.themeColor
         
         let rootViewController = IndexController()
         window.rootViewController = rootViewController
