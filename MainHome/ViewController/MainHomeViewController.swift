@@ -19,6 +19,5 @@ final class MainHomeViewController: MainHomeBaseViewController {
     
     private func setUpNavigationBar() {
         title = "Home"
-     
     }
 }

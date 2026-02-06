@@ -14,6 +14,7 @@ class MainHomeBaseViewController: UIViewController {
     // MARK: - Properties
     
     private let layout: UICollectionViewLayout
+    private(set) lazy var refreshControl = UIRefreshControl()
     
     // MARK: - UI Components
     
@@ -46,6 +47,7 @@ class MainHomeBaseViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupRefreshControl()
     }
     
     // MARK: - Setup
@@ -57,5 +59,25 @@ class MainHomeBaseViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    private func setupRefreshControl() {
+        collectionView.refreshControl = refreshControl
+        refreshControl.addAction(
+            UIAction { [weak self] _ in
+                self?.handleRefresh()
+            },
+            for: .valueChanged
+        )
+    }
+    
+    // MARK: - Refresh
+
+    func handleRefresh() {
+    }
+    
+    func endRefreshing() {
+        guard refreshControl.isRefreshing else { return }
+        refreshControl.endRefreshing()
     }
 }
