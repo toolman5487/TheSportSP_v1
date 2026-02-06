@@ -47,7 +47,16 @@ enum TabType: Sendable {
     }
     
     func makeViewController() -> UIViewController {
-        return UINavigationController(rootViewController: ViewController())
+        switch self {
+        case .home:
+            let homeVC = MainHomeViewController()
+            homeVC.title = "Home"
+            return UINavigationController(rootViewController: homeVC)
+        case .events, .athlete, .profile:
+            let vc = ViewController()
+            vc.title = "Placeholder"
+            return UINavigationController(rootViewController: vc)
+        }
     }
 }
 
