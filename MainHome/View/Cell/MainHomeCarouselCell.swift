@@ -85,6 +85,9 @@ final class MainHomeCarouselCell: UICollectionViewCell {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().offset(-12)
         }
+        var perspective = CATransform3DIdentity
+        perspective.m34 = -1 / 800
+        collectionView.layer.sublayerTransform = perspective
     }
 
     func configure(imageNames: [String]) {
@@ -150,6 +153,7 @@ final class MainHomeCarouselCell: UICollectionViewCell {
         if nextIndex >= totalCount {
             nextIndex = 1
             collectionView.setContentOffset(CGPoint(x: contentOffsetX(forIndex: 1), y: 0), animated: false)
+            collectionView.layoutIfNeeded()
         } else {
             collectionView.setContentOffset(CGPoint(x: contentOffsetX(forIndex: nextIndex), y: 0), animated: true)
         }
@@ -160,16 +164,26 @@ final class MainHomeCarouselCell: UICollectionViewCell {
     private func normalizeOffsetIfNeeded() {
         guard count > 1, collectionView.bounds.width > 0 else { return }
         let index = nearestIndex(forContentOffsetX: collectionView.contentOffset.x)
+        let didJump: Bool
         if index == 0 {
             collectionView.setContentOffset(CGPoint(x: contentOffsetX(forIndex: totalCount - 2), y: 0), animated: false)
             currentIndex = totalCount - 2
+            didJump = true
         } else if index == totalCount - 1 {
             collectionView.setContentOffset(CGPoint(x: contentOffsetX(forIndex: 1), y: 0), animated: false)
             currentIndex = 1
+            didJump = true
         } else {
             currentIndex = index
+            didJump = false
         }
         pageControl.currentPage = logicalPage(forItemIndex: currentIndex)
+        if didJump {
+            collectionView.layoutIfNeeded()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateDepthForVisibleCells()
+            }
+        }
     }
 
     private func snapToNearestIndex() {
@@ -229,14 +243,22 @@ extension MainHomeCarouselCell: UICollectionViewDataSource, UICollectionViewDele
     private func updateDepthForVisibleCells() {
         let width = collectionView.bounds.width
         guard width > 0 else { return }
-        let centerX = collectionView.bounds.midX
+        let centerXInContent = collectionView.contentOffset.x + width / 2
+        let use3D = !UIAccessibility.isReduceMotionEnabled
         collectionView.visibleCells.forEach { cell in
             guard let carouselCell = cell as? CarouselImageCell else { return }
-            let offset = (cell.frame.midX - centerX) / width
+            let offset = (cell.frame.midX - centerXInContent) / width
             let absNormalized = min(1, abs(offset))
-            let scale = 1 - 0.12 * absNormalized
-            let alpha = 1 - 0.3 * absNormalized
-            carouselCell.applyDepth(scale: scale, alpha: alpha)
+            let alpha = 1 - 0.55 * absNormalized
+            if use3D {
+                let rotationY = -offset * 0.45
+                let scale = 1 - 0.35 * absNormalized
+                carouselCell.applyDepth3D(rotationY: rotationY, scale: scale, alpha: alpha)
+            } else {
+                let scaleX = 1 - 0.38 * absNormalized
+                let scaleY = 1 - 0.52 * absNormalized
+                carouselCell.applyDepth2D(scaleX: scaleX, scaleY: scaleY, alpha: alpha)
+            }
         }
     }
 }
@@ -279,8 +301,18 @@ private final class CarouselImageCell: UICollectionViewCell {
         imageView.backgroundColor = .tertiarySystemFill
     }
 
-    func applyDepth(scale: CGFloat, alpha: CGFloat) {
-        contentView.transform = CGAffineTransform(scaleX: scale, y: scale)
+    func applyDepth2D(scaleX: CGFloat, scaleY: CGFloat, alpha: CGFloat) {
+        contentView.layer.transform = CATransform3DIdentity
+        contentView.transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+        contentView.alpha = alpha
+    }
+
+    func applyDepth3D(rotationY: CGFloat, scale: CGFloat, alpha: CGFloat) {
+        contentView.transform = .identity
+        var t = CATransform3DIdentity
+        t = CATransform3DRotate(t, rotationY, 0, 1, 0)
+        t = CATransform3DScale(t, scale, scale, 1)
+        contentView.layer.transform = t
         contentView.alpha = alpha
     }
 }
