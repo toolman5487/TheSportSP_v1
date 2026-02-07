@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 @MainActor
-class MainHomeBaseViewController: UIViewController {
+class MainHomeBaseViewController: BaseViewController {
     
     // MARK: - Properties
     
@@ -46,15 +46,13 @@ class MainHomeBaseViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         setupRefreshControl()
     }
     
     // MARK: - Setup
     
-    private func setupUI() {
-        view.backgroundColor = .systemBackground
-        
+    override func setup() {
+        super.setup()
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()

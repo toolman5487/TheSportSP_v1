@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+@MainActor
 final class MainHomeViewController: MainHomeBaseViewController {
 
     override func viewDidLoad() {

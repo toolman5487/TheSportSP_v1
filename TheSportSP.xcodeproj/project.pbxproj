@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		154B07892F36FD7E002C585E /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07882F36FD7E002C585E /* BaseViewController.swift */; };
+		154B078F2F370152002C585E /* APINetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B078E2F370152002C585E /* APINetworkConfig.swift */; };
+		154B07932F37046B002C585E /* MainHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07922F37046B002C585E /* MainHomeViewModel.swift */; };
+		154B07962F37048D002C585E /* MainHomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07952F37048D002C585E /* MainHomeService.swift */; };
+		154B07982F3704A3002C585E /* APIConfig .swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07972F3704A3002C585E /* APIConfig .swift */; };
 		15893EC92F1CE533002E1221 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 15893EC82F1CE533002E1221 /* SnapKit */; };
 		15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893ED92F1D2489002E1221 /* CustomTabBar.swift */; };
 		15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */; };
@@ -23,6 +28,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		154B07882F36FD7E002C585E /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		154B078E2F370152002C585E /* APINetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APINetworkConfig.swift; sourceTree = "<group>"; };
+		154B07922F37046B002C585E /* MainHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeViewModel.swift; sourceTree = "<group>"; };
+		154B07952F37048D002C585E /* MainHomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeService.swift; sourceTree = "<group>"; };
+		154B07972F3704A3002C585E /* APIConfig .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIConfig .swift"; sourceTree = "<group>"; };
 		15893EAF2F1CD226002E1221 /* TheSportSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSportSP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15893ED92F1D2489002E1221 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarDelegate.swift; sourceTree = "<group>"; };
@@ -71,6 +81,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		154B078A2F370070002C585E /* Color */ = {
+			isa = PBXGroup;
+			children = (
+				15893F382F322E92002E1221 /* ColorConfig.swift */,
+			);
+			path = Color;
+			sourceTree = "<group>";
+		};
+		154B078B2F37007F002C585E /* APINetwork */ = {
+			isa = PBXGroup;
+			children = (
+				154B078E2F370152002C585E /* APINetworkConfig.swift */,
+				154B07972F3704A3002C585E /* APIConfig .swift */,
+			);
+			path = APINetwork;
+			sourceTree = "<group>";
+		};
+		154B07902F370450002C585E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		154B07912F370458002C585E /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				154B07922F37046B002C585E /* MainHomeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		154B07942F370475002C585E /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				154B07952F37048D002C585E /* MainHomeService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		15893EA62F1CD226002E1221 = {
 			isa = PBXGroup;
 			children = (
@@ -158,7 +208,7 @@
 		15893F2E2F27B1E6002E1221 /* BaseViewController */ = {
 			isa = PBXGroup;
 			children = (
-				15893F472F339231002E1221 /* MainHomeBaseViewController.swift */,
+				154B07882F36FD7E002C585E /* BaseViewController.swift */,
 			);
 			path = BaseViewController;
 			sourceTree = "<group>";
@@ -197,7 +247,8 @@
 		15893F372F322E76002E1221 /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				15893F382F322E92002E1221 /* ColorConfig.swift */,
+				154B078B2F37007F002C585E /* APINetwork */,
+				154B078A2F370070002C585E /* Color */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -205,6 +256,9 @@
 		15893F4B2F363D74002E1221 /* MainHome */ = {
 			isa = PBXGroup;
 			children = (
+				154B07942F370475002C585E /* Service */,
+				154B07912F370458002C585E /* ViewModel */,
+				154B07902F370450002C585E /* Model */,
 				15893F4C2F363D80002E1221 /* ViewController */,
 			);
 			path = MainHome;
@@ -214,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				15893F4D2F363D93002E1221 /* MainHomeViewController.swift */,
+				15893F472F339231002E1221 /* MainHomeBaseViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -299,14 +354,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				15893F322F27B5C5002E1221 /* TabBarViewModel.swift in Sources */,
+				154B07962F37048D002C585E /* MainHomeService.swift in Sources */,
+				154B07982F3704A3002C585E /* APIConfig .swift in Sources */,
+				154B07932F37046B002C585E /* MainHomeViewModel.swift in Sources */,
 				15893F4E2F363D93002E1221 /* MainHomeViewController.swift in Sources */,
 				15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */,
 				15893F2A2F266A84002E1221 /* IndexController.swift in Sources */,
 				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
+				154B07892F36FD7E002C585E /* BaseViewController.swift in Sources */,
 				15893F482F339231002E1221 /* MainHomeBaseViewController.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
 				15893F392F322E92002E1221 /* ColorConfig.swift in Sources */,
 				15893F362F322843002E1221 /* UIColorExtension.swift in Sources */,
+				154B078F2F370152002C585E /* APINetworkConfig.swift in Sources */,
 				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,
 				15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */,
 			);
