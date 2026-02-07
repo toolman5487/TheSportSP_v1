@@ -14,6 +14,10 @@
 		154B07982F3704A3002C585E /* APIConfig .swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07972F3704A3002C585E /* APIConfig .swift */; };
 		154B07EB2F3710B0002C585E /* GlobalTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07EA2F3710B0002C585E /* GlobalTimer.swift */; };
 		154B07EE2F371367002C585E /* MainHomeCarouselCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07ED2F371367002C585E /* MainHomeCarouselCell.swift */; };
+		154B07F12F378933002C585E /* CarouselDepthEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07EF2F378933002C585E /* CarouselDepthEffect.swift */; };
+		154B07F22F378933002C585E /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07F02F378933002C585E /* CarouselView.swift */; };
+		154B07F72F3790B7002C585E /* MainCarouselModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07F62F3790B7002C585E /* MainCarouselModel.swift */; };
+		154B07FA2F379577002C585E /* SportsDBEventModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154B07F82F379577002C585E /* SportsDBEventModel.swift */; };
 		15893EC92F1CE533002E1221 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 15893EC82F1CE533002E1221 /* SnapKit */; };
 		15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893ED92F1D2489002E1221 /* CustomTabBar.swift */; };
 		15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */; };
@@ -37,6 +41,10 @@
 		154B07972F3704A3002C585E /* APIConfig .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIConfig .swift"; sourceTree = "<group>"; };
 		154B07EA2F3710B0002C585E /* GlobalTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalTimer.swift; sourceTree = "<group>"; };
 		154B07ED2F371367002C585E /* MainHomeCarouselCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeCarouselCell.swift; sourceTree = "<group>"; };
+		154B07EF2F378933002C585E /* CarouselDepthEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselDepthEffect.swift; sourceTree = "<group>"; };
+		154B07F02F378933002C585E /* CarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselView.swift; sourceTree = "<group>"; };
+		154B07F62F3790B7002C585E /* MainCarouselModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCarouselModel.swift; sourceTree = "<group>"; };
+		154B07F82F379577002C585E /* SportsDBEventModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsDBEventModel.swift; sourceTree = "<group>"; };
 		15893EAF2F1CD226002E1221 /* TheSportSP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheSportSP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		15893ED92F1D2489002E1221 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		15893EDD2F1D2579002E1221 /* CustomTabBarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +113,7 @@
 		154B07902F370450002C585E /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				154B07F62F3790B7002C585E /* MainCarouselModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -156,6 +165,31 @@
 				154B07EA2F3710B0002C585E /* GlobalTimer.swift */,
 			);
 			path = Timer;
+			sourceTree = "<group>";
+		};
+		154B07F32F378A99002C585E /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				154B07F42F378AA1002C585E /* Carousel */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
+		154B07F42F378AA1002C585E /* Carousel */ = {
+			isa = PBXGroup;
+			children = (
+				154B07EF2F378933002C585E /* CarouselDepthEffect.swift */,
+				154B07F02F378933002C585E /* CarouselView.swift */,
+			);
+			path = Carousel;
+			sourceTree = "<group>";
+		};
+		154B07F92F379577002C585E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				154B07F82F379577002C585E /* SportsDBEventModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		15893EA62F1CD226002E1221 = {
@@ -236,6 +270,7 @@
 		15893F2D2F27B1D8002E1221 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				154B07F32F378A99002C585E /* Component */,
 				15893F2F2F27B1F3002E1221 /* POP */,
 				15893F2E2F27B1E6002E1221 /* BaseViewController */,
 			);
@@ -284,6 +319,7 @@
 		15893F372F322E76002E1221 /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				154B07F92F379577002C585E /* Model */,
 				154B07EC2F3710B4002C585E /* Timer */,
 				154B078B2F37007F002C585E /* APINetwork */,
 				154B078A2F370070002C585E /* Color */,
@@ -394,13 +430,17 @@
 				15893F322F27B5C5002E1221 /* TabBarViewModel.swift in Sources */,
 				154B07962F37048D002C585E /* MainHomeService.swift in Sources */,
 				154B07982F3704A3002C585E /* APIConfig .swift in Sources */,
+				154B07FA2F379577002C585E /* SportsDBEventModel.swift in Sources */,
 				154B07932F37046B002C585E /* MainHomeViewModel.swift in Sources */,
 				15893F4E2F363D93002E1221 /* MainHomeViewController.swift in Sources */,
 				15893F042F226329002E1221 /* TabBarConfiguration.swift in Sources */,
+				154B07F72F3790B7002C585E /* MainCarouselModel.swift in Sources */,
 				15893F2A2F266A84002E1221 /* IndexController.swift in Sources */,
 				15893EDA2F1D2489002E1221 /* CustomTabBar.swift in Sources */,
 				154B07EB2F3710B0002C585E /* GlobalTimer.swift in Sources */,
 				154B07892F36FD7E002C585E /* BaseViewController.swift in Sources */,
+				154B07F12F378933002C585E /* CarouselDepthEffect.swift in Sources */,
+				154B07F22F378933002C585E /* CarouselView.swift in Sources */,
 				154B07EE2F371367002C585E /* MainHomeCarouselCell.swift in Sources */,
 				15893F482F339231002E1221 /* MainHomeBaseViewController.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
