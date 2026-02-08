@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import SDWebImage
+import Combine
 
 // MARK: - CarouselView
 
@@ -54,9 +55,7 @@ final class CarouselView: UIView {
     private var imageURLs: [String] = []
     private var titles: [String?] = []
     private var useURLs: Bool = false
-    private var timerHandlerId: UUID?
-    private var lastAutoScrollTime: Date = .distantPast
-    private var isUserInteracting: Bool = false
+    private var autoScrollCancellable: AnyCancellable?
     private var currentIndex: Int = 0
     private var count: Int { useURLs ? imageURLs.count : imageNames.count }
     private var totalCount: Int { count > 1 ? count + 2 : count }
@@ -78,10 +77,7 @@ final class CarouselView: UIView {
     override func didMoveToWindow() {
         super.didMoveToWindow()
         if window == nil {
-            if let id = timerHandlerId {
-                GlobalTimer.shared.removeHandler(id)
-                timerHandlerId = nil
-            }
+            stopAutoScroll()
         } else if count > 1 {
             startAutoScroll()
         }
@@ -120,10 +116,7 @@ final class CarouselView: UIView {
     }
 
     private func applyConfigure() {
-        if let id = timerHandlerId {
-            GlobalTimer.shared.removeHandler(id)
-            timerHandlerId = nil
-        }
+        stopAutoScroll()
         pageControl.numberOfPages = count
         pageControl.currentPage = 0
         currentIndex = count > 1 ? 1 : 0
@@ -143,16 +136,18 @@ final class CarouselView: UIView {
     // MARK: - Private Helpers
 
     private func startAutoScroll() {
-        guard timerHandlerId == nil else { return }
-        lastAutoScrollTime = Date()
-        timerHandlerId = GlobalTimer.shared.addHandler { [weak self] in
-            guard let self else { return }
-            guard !self.isUserInteracting else { return }
-            let now = Date()
-            guard now.timeIntervalSince(self.lastAutoScrollTime) >= self.autoScrollInterval else { return }
-            self.lastAutoScrollTime = now
-            self.advanceToNextPage()
-        }
+        guard count > 1 else { return }
+        stopAutoScroll()
+        autoScrollCancellable = Timer.publish(every: autoScrollInterval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.advanceToNextPage()
+            }
+    }
+
+    private func stopAutoScroll() {
+        autoScrollCancellable?.cancel()
+        autoScrollCancellable = nil
     }
 
     private func itemWidth() -> CGFloat {
@@ -238,7 +233,9 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CarouselViewImageCell.reuseId, for: indexPath) as? CarouselViewImageCell ?? CarouselViewImageCell()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CarouselViewImageCell.reuseId, for: indexPath) as? CarouselViewImageCell else {
+            fatalError("Expected CarouselViewImageCell. Check that the cell is registered with reuseId: \(CarouselViewImageCell.reuseId)")
+        }
         let imageIndex = (indexPath.item + count - 1) % count
         if useURLs {
             let urlString = imageURLs[safe: imageIndex] ?? ""
@@ -261,7 +258,7 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        isUserInteracting = true
+        stopAutoScroll()
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -276,15 +273,13 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        isUserInteracting = false
-        lastAutoScrollTime = Date()
+        if count > 1 { startAutoScroll() }
         normalizeOffsetIfNeeded()
         updateDepthForVisibleCells()
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        isUserInteracting = false
-        lastAutoScrollTime = Date()
+        if count > 1 { startAutoScroll() }
         normalizeOffsetIfNeeded()
         updateDepthForVisibleCells()
     }

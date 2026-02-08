@@ -36,7 +36,7 @@ final class CarouselDepthEffect {
 
     func updateDepth(
         collectionView: UICollectionView,
-        transformProvider: (UICollectionViewCell) -> CarouselDepthApplicable?
+        transformProvider: @MainActor (UICollectionViewCell) -> CarouselDepthApplicable?
     ) {
         let width = collectionView.bounds.width
         guard width > 0 else { return }
