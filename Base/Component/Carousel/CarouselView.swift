@@ -56,6 +56,7 @@ final class CarouselView: UIView {
     private var useURLs: Bool = false
     private var timerHandlerId: UUID?
     private var lastAutoScrollTime: Date = .distantPast
+    private var isUserInteracting: Bool = false
     private var currentIndex: Int = 0
     private var count: Int { useURLs ? imageURLs.count : imageNames.count }
     private var totalCount: Int { count > 1 ? count + 2 : count }
@@ -76,9 +77,13 @@ final class CarouselView: UIView {
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        if window == nil, let id = timerHandlerId {
-            GlobalTimer.shared.removeHandler(id)
-            timerHandlerId = nil
+        if window == nil {
+            if let id = timerHandlerId {
+                GlobalTimer.shared.removeHandler(id)
+                timerHandlerId = nil
+            }
+        } else if count > 1 {
+            startAutoScroll()
         }
     }
 
@@ -142,6 +147,7 @@ final class CarouselView: UIView {
         lastAutoScrollTime = Date()
         timerHandlerId = GlobalTimer.shared.addHandler { [weak self] in
             guard let self else { return }
+            guard !self.isUserInteracting else { return }
             let now = Date()
             guard now.timeIntervalSince(self.lastAutoScrollTime) >= self.autoScrollInterval else { return }
             self.lastAutoScrollTime = now
@@ -216,7 +222,11 @@ final class CarouselView: UIView {
     }
 
     private func updateDepthForVisibleCells() {
-        depthEffect.updateDepth(collectionView: collectionView) { $0 as? CarouselDepthApplicable }
+        depthEffect.updateDepth(collectionView: collectionView, transformProvider: Self.castToDepthApplicable)
+    }
+
+    private static func castToDepthApplicable(_ cell: UICollectionViewCell) -> CarouselDepthApplicable? {
+        cell as? CarouselDepthApplicable
     }
 }
 
@@ -250,6 +260,10 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
         return UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
     }
 
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        isUserInteracting = true
+    }
+
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         var index = nearestIndex(forContentOffsetX: targetContentOffset.pointee.x)
         if index == 0 { index = totalCount - 2 }
@@ -262,11 +276,15 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
     }
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        isUserInteracting = false
+        lastAutoScrollTime = Date()
         normalizeOffsetIfNeeded()
         updateDepthForVisibleCells()
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        isUserInteracting = false
+        lastAutoScrollTime = Date()
         normalizeOffsetIfNeeded()
         updateDepthForVisibleCells()
     }
@@ -276,6 +294,13 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
 
 private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthApplicable {
     static let reuseId = "CarouselViewImageCell"
+
+    private static let placeholderImage: UIImage? = {
+        let config = UIImage.SymbolConfiguration(pointSize: 48, weight: .light)
+        return UIImage(systemName: "photo", withConfiguration: config)?
+            .withTintColor(.tertiaryLabel, renderingMode: .alwaysTemplate)
+    }()
+
     private let imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
@@ -283,12 +308,24 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
         return view
     }()
 
+    private let gradientOverlayLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [
+            UIColor.clear.cgColor,
+            UIColor.black.withAlphaComponent(0.5).cgColor,
+        ]
+        layer.locations = [0.3, 1.0]
+        return layer
+    }()
+
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 16)
+        label.font = .boldSystemFont(ofSize: 20)
         label.textColor = .label
         label.textAlignment = .center
-        label.numberOfLines = 2
+        label.numberOfLines = 1
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         label.lineBreakMode = .byTruncatingTail
         return label
     }()
@@ -296,6 +333,7 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(imageView)
+        contentView.layer.addSublayer(gradientOverlayLayer)
         contentView.addSubview(titleLabel)
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
@@ -315,8 +353,26 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
         }
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientOverlayLayer.frame = contentView.bounds
+    }
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.sd_cancelCurrentImageLoad()
+        imageView.image = nil
+        imageView.backgroundColor = .tertiarySystemFill
+        titleLabel.text = nil
+        titleLabel.attributedText = nil
+        titleLabel.isHidden = true
+        contentView.layer.transform = CATransform3DIdentity
+        contentView.transform = .identity
+        contentView.alpha = 1
     }
 
     func configure(systemName: String) {
@@ -329,23 +385,38 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
         imageView.backgroundColor = .tertiarySystemFill
         titleLabel.text = nil
         titleLabel.isHidden = true
+        accessibilityLabel = String(localized: "Carousel item")
+        accessibilityTraits = [.button]
     }
 
     func configure(imageURLString: String, title: String? = nil) {
         imageView.sd_cancelCurrentImageLoad()
         if let url = URL(string: imageURLString), !imageURLString.isEmpty {
-            imageView.sd_setImage(with: url, placeholderImage: nil)
+            let scale = UIScreen.main.scale
+            let thumbnailPixelSize = CGSize(width: 800 * scale, height: 600 * scale)
+            let context: [SDWebImageContextOption: Any] = [
+                SDWebImageContextOption.imageThumbnailPixelSize: NSValue(cgSize: thumbnailPixelSize),
+            ]
+            imageView.sd_setImage(
+                with: url,
+                placeholderImage: Self.placeholderImage,
+                context: context
+            )
         } else {
             imageView.image = nil
         }
         imageView.backgroundColor = .clear
         if let title, !title.isEmpty {
-            titleLabel.text = title
+            titleLabel.attributedText = title.attributedWithShadow(font: .boldSystemFont(ofSize: 20))
             titleLabel.isHidden = false
+            accessibilityLabel = title
         } else {
             titleLabel.text = nil
             titleLabel.isHidden = true
+            accessibilityLabel = String(localized: "Carousel image")
         }
+        accessibilityTraits = [.button]
+        accessibilityHint = String(localized: "Double tap to view")
     }
 
     func applyDepth2D(scaleX: CGFloat, scaleY: CGFloat, alpha: CGFloat) {

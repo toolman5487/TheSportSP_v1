@@ -32,7 +32,8 @@ final class MainHomeViewController: MainHomeBaseViewController {
     // MARK: - Navigation
 
     private func setUpNavigationBar() {
-        title = "Home"
+        title = nil
+        navigationItem.largeTitleDisplayMode = .never
     }
 
     // MARK: - Setup

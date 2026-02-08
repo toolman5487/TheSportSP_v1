@@ -50,7 +50,6 @@ enum TabType: Sendable {
         switch self {
         case .home:
             let homeVC = MainHomeViewController()
-            homeVC.title = "Home"
             return UINavigationController(rootViewController: homeVC)
         case .events, .athlete, .profile:
             let vc = ViewController()
