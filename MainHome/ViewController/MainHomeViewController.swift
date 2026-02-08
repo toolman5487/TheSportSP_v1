@@ -74,7 +74,7 @@ extension MainHomeViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainHomeCarouselCell.reuseId, for: indexPath) as? MainHomeCarouselCell ?? MainHomeCarouselCell()
         let items = viewModel.carouselItems
         if items.isEmpty {
-            cell.configure(imageNames: ["sportscourt.fill"])
+            cell.configure(imageNames: [])
         } else {
             cell.configure(items: items)
         }

@@ -52,6 +52,7 @@ final class CarouselView: UIView {
 
     private var imageNames: [String] = []
     private var imageURLs: [String] = []
+    private var titles: [String?] = []
     private var useURLs: Bool = false
     private var timerHandlerId: UUID?
     private var lastAutoScrollTime: Date = .distantPast
@@ -91,7 +92,7 @@ final class CarouselView: UIView {
         }
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-12)
+            make.bottom.equalToSuperview()
         }
         depthEffect.configurePerspective(on: collectionView.layer)
     }
@@ -105,10 +106,11 @@ final class CarouselView: UIView {
         applyConfigure()
     }
 
-    func configure(imageURLs: [String]) {
+    func configure(imageURLs: [String], titles: [String?]? = nil) {
         useURLs = true
         imageNames = []
         self.imageURLs = imageURLs.isEmpty ? [""] : imageURLs
+        self.titles = titles ?? []
         applyConfigure()
     }
 
@@ -230,7 +232,8 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
         let imageIndex = (indexPath.item + count - 1) % count
         if useURLs {
             let urlString = imageURLs[safe: imageIndex] ?? ""
-            cell.configure(imageURLString: urlString)
+            let title = titles[safe: imageIndex] ?? nil
+            cell.configure(imageURLString: urlString, title: title)
         } else {
             let name = imageNames[safe: imageIndex] ?? ""
             cell.configure(systemName: name)
@@ -275,22 +278,41 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
     static let reuseId = "CarouselViewImageCell"
     private let imageView: UIImageView = {
         let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        view.clipsToBounds = true
+        view.contentMode = .scaleAspectFill
         view.tintColor = .label
-        view.backgroundColor = .tertiarySystemFill
         return view
+    }()
+
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 16)
+        label.textColor = .label
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingTail
+        return label
     }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(imageView)
+        contentView.addSubview(titleLabel)
+        contentView.layer.cornerRadius = 12
+        contentView.layer.masksToBounds = true
+        contentView.clipsToBounds = true
+        layer.cornerRadius = 12
+        layer.masksToBounds = true
+        backgroundColor = .tertiarySystemBackground
+        contentView.backgroundColor = .clear
+
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        backgroundColor = .clear
+        titleLabel.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(4)
+            make.bottom.equalToSuperview().inset(12)
+            make.height.greaterThanOrEqualTo(44)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -305,16 +327,25 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
             imageView.image = nil
         }
         imageView.backgroundColor = .tertiarySystemFill
+        titleLabel.text = nil
+        titleLabel.isHidden = true
     }
 
-    func configure(imageURLString: String) {
+    func configure(imageURLString: String, title: String? = nil) {
         imageView.sd_cancelCurrentImageLoad()
         if let url = URL(string: imageURLString), !imageURLString.isEmpty {
-            imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "sportscourt.fill"))
+            imageView.sd_setImage(with: url, placeholderImage: nil)
         } else {
-            imageView.image = UIImage(systemName: "sportscourt.fill")
+            imageView.image = nil
         }
-        imageView.backgroundColor = .tertiarySystemFill
+        imageView.backgroundColor = .clear
+        if let title, !title.isEmpty {
+            titleLabel.text = title
+            titleLabel.isHidden = false
+        } else {
+            titleLabel.text = nil
+            titleLabel.isHidden = true
+        }
     }
 
     func applyDepth2D(scaleX: CGFloat, scaleY: CGFloat, alpha: CGFloat) {

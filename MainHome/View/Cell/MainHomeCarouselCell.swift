@@ -49,6 +49,7 @@ final class MainHomeCarouselCell: UICollectionViewCell {
     func configure(items: [MainCarouselModel]) {
         carouselItems = items
         let urls = items.map { $0.imageURL ?? "" }
-        carouselView.configure(imageURLs: urls)
+        let titles = items.map { $0.title }
+        carouselView.configure(imageURLs: urls, titles: titles)
     }
 }
