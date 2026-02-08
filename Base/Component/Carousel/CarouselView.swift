@@ -310,9 +310,9 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
     func configure(imageURLString: String) {
         imageView.sd_cancelCurrentImageLoad()
         if let url = URL(string: imageURLString), !imageURLString.isEmpty {
-            imageView.sd_setImage(with: url, placeholderImage: nil)
+            imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "sportscourt.fill"))
         } else {
-            imageView.image = nil
+            imageView.image = UIImage(systemName: "sportscourt.fill")
         }
         imageView.backgroundColor = .tertiarySystemFill
     }

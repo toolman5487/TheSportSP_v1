@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Combine
 
 @MainActor
 final class MainHomeViewController: MainHomeBaseViewController {
@@ -17,10 +18,15 @@ final class MainHomeViewController: MainHomeBaseViewController {
 
     private static let carouselHeight: CGFloat = 180
 
+    private let viewModel = MainHomeViewModel()
+    private var cancellables = Set<AnyCancellable>()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         setupCollectionView()
+        bindViewModel()
+        viewModel.loadCarousel()
     }
 
     // MARK: - Navigation
@@ -37,13 +43,18 @@ final class MainHomeViewController: MainHomeBaseViewController {
         collectionView.delegate = self
     }
 
-    private var carouselImageNames: [String] {
-        [
-            "sportscourt.fill",
-            "figure.run",
-            "trophy.fill",
-            "medal.fill",
-        ]
+    private func bindViewModel() {
+        viewModel.$carouselItems
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.collectionView.reloadData()
+                self?.endRefreshing()
+            }
+            .store(in: &cancellables)
+    }
+
+    override func handleRefresh() {
+        viewModel.loadCarousel()
     }
 }
 
@@ -61,7 +72,12 @@ extension MainHomeViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainHomeCarouselCell.reuseId, for: indexPath) as? MainHomeCarouselCell ?? MainHomeCarouselCell()
-        cell.configure(imageNames: carouselImageNames)
+        let items = viewModel.carouselItems
+        if items.isEmpty {
+            cell.configure(imageNames: ["sportscourt.fill"])
+        } else {
+            cell.configure(items: items)
+        }
         return cell
     }
 }

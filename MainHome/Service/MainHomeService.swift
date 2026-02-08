@@ -7,25 +7,26 @@
 
 import Foundation
 
+// MARK: - MainHomeServiceProtocol
+
+protocol MainHomeServiceProtocol: Sendable {
+    func fetchTodayCarouselEvents() async throws -> [MainCarouselModel]
+}
+
 // MARK: - MainHomeService
 
 @MainActor
-final class MainHomeService {
+final class MainHomeService: MainHomeServiceProtocol {
 
     private let client = APIClient.shared
 
-    func fetchCarouselEvents(teamId: String) async throws -> [MainCarouselModel] {
-        let path = SportsDBEndpoint.Schedule.eventsNext.pathWithKey()
-        guard let url = client.url(path: path, queryItems: ["id": teamId]) else {
-            throw APIError.invalidURL
-        }
-        let response: SportsDBEventsResponse = try await client.get(url: url)
-        return (response.events ?? []).map { MainCarouselModel(sportsDBEvent: $0) }
-    }
-
-    func fetchCarouselEvents(leagueId: String) async throws -> [MainCarouselModel] {
-        let path = SportsDBEndpoint.Schedule.eventsNextLeague.pathWithKey()
-        guard let url = client.url(path: path, queryItems: ["id": leagueId]) else {
+    func fetchTodayCarouselEvents() async throws -> [MainCarouselModel] {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone.current
+        let dateString = formatter.string(from: Date())
+        let path = SportsDBEndpoint.Schedule.eventsDay.pathWithKey()
+        guard let url = client.url(path: path, queryItems: ["d": dateString]) else {
             throw APIError.invalidURL
         }
         let response: SportsDBEventsResponse = try await client.get(url: url)
