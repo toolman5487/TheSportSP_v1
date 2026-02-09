@@ -289,13 +289,6 @@ extension CarouselView: UICollectionViewDataSource, UICollectionViewDelegateFlow
 
 private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthApplicable {
     static let reuseId = "CarouselViewImageCell"
-
-    private static let placeholderImage: UIImage? = {
-        let config = UIImage.SymbolConfiguration(pointSize: 48, weight: .light)
-        return UIImage(systemName: "photo", withConfiguration: config)?
-            .withTintColor(.tertiaryLabel, renderingMode: .alwaysTemplate)
-    }()
-
     private let imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFill
@@ -388,13 +381,17 @@ private final class CarouselViewImageCell: UICollectionViewCell, CarouselDepthAp
         imageView.sd_cancelCurrentImageLoad()
         if let url = URL(string: imageURLString), !imageURLString.isEmpty {
             let scale = UIScreen.main.scale
-            let thumbnailPixelSize = CGSize(width: 800 * scale, height: 600 * scale)
+            var thumbnailPixelSize = CGSize(width: 800 * scale, height: 600 * scale)
+            let viewSize = contentView.bounds.size
+            if viewSize.width > 0, viewSize.height > 0 {
+                thumbnailPixelSize = CGSize(width: viewSize.width * scale, height: viewSize.height * scale)
+            }
             let context: [SDWebImageContextOption: Any] = [
                 SDWebImageContextOption.imageThumbnailPixelSize: NSValue(cgSize: thumbnailPixelSize),
             ]
             imageView.sd_setImage(
                 with: url,
-                placeholderImage: Self.placeholderImage,
+                placeholderImage: nil,
                 context: context
             )
         } else {
