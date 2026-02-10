@@ -28,10 +28,12 @@
 		15893F2A2F266A84002E1221 /* IndexController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F292F266A84002E1221 /* IndexController.swift */; };
 		15893F322F27B5C5002E1221 /* TabBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F302F27B5C5002E1221 /* TabBarViewModel.swift */; };
 		15893F362F322843002E1221 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F352F322843002E1221 /* UIColorExtension.swift */; };
-		15893F522F363E00002E1221 /* String+TextShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F512F363E00002E1221 /* String+TextShadow.swift */; };
 		15893F392F322E92002E1221 /* ColorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F382F322E92002E1221 /* ColorConfig.swift */; };
 		15893F482F339231002E1221 /* MainHomeBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F472F339231002E1221 /* MainHomeBaseViewController.swift */; };
 		15893F4E2F363D93002E1221 /* MainHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F4D2F363D93002E1221 /* MainHomeViewController.swift */; };
+		15893F522F363E00002E1221 /* String+TextShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F512F363E00002E1221 /* String+TextShadow.swift */; };
+		15F15F862F3B83D300FB119C /* MainHomeOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F15F852F3B83D300FB119C /* MainHomeOptionCell.swift */; };
+		15F15F882F3B866800FB119C /* MainHomeOptionsContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F15F872F3B866800FB119C /* MainHomeOptionsContainerCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,10 +57,12 @@
 		15893F292F266A84002E1221 /* IndexController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexController.swift; sourceTree = "<group>"; };
 		15893F302F27B5C5002E1221 /* TabBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewModel.swift; sourceTree = "<group>"; };
 		15893F352F322843002E1221 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
-		15893F512F363E00002E1221 /* String+TextShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+TextShadow.swift"; sourceTree = "<group>"; };
 		15893F382F322E92002E1221 /* ColorConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConfig.swift; sourceTree = "<group>"; };
 		15893F472F339231002E1221 /* MainHomeBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeBaseViewController.swift; sourceTree = "<group>"; };
 		15893F4D2F363D93002E1221 /* MainHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeViewController.swift; sourceTree = "<group>"; };
+		15893F512F363E00002E1221 /* String+TextShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+TextShadow.swift"; sourceTree = "<group>"; };
+		15F15F852F3B83D300FB119C /* MainHomeOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeOptionCell.swift; sourceTree = "<group>"; };
+		15F15F872F3B866800FB119C /* MainHomeOptionsContainerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeOptionsContainerCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -148,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				154B07E72F370AB9002C585E /* Cell */,
-				154B07992F37096F002C585E /* Base */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -156,7 +159,9 @@
 		154B07E72F370AB9002C585E /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				15F15F872F3B866800FB119C /* MainHomeOptionsContainerCell.swift */,
 				154B07ED2F371367002C585E /* MainHomeCarouselCell.swift */,
+				15F15F852F3B83D300FB119C /* MainHomeOptionCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 		15893F4B2F363D74002E1221 /* MainHome */ = {
 			isa = PBXGroup;
 			children = (
+				154B07992F37096F002C585E /* Base */,
 				154B079A2F370981002C585E /* View */,
 				154B07942F370475002C585E /* Service */,
 				154B07912F370458002C585E /* ViewModel */,
@@ -451,7 +457,9 @@
 				15893F362F322843002E1221 /* UIColorExtension.swift in Sources */,
 				15893F522F363E00002E1221 /* String+TextShadow.swift in Sources */,
 				154B078F2F370152002C585E /* APINetworkConfig.swift in Sources */,
+				15F15F862F3B83D300FB119C /* MainHomeOptionCell.swift in Sources */,
 				15893EDF2F1D257A002E1221 /* CustomTabBarDelegate.swift in Sources */,
+				15F15F882F3B866800FB119C /* MainHomeOptionsContainerCell.swift in Sources */,
 				15893EE02F1D257A002E1221 /* TabBarModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
