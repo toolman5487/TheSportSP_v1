@@ -2,7 +2,6 @@
 //  SportsDBListModels.swift
 //  TheSportSP
 //
-//  共用 SportsDB List 類別的回傳 Model（all_sports / all_leagues / all_teams 等）。
 //
 
 import Foundation

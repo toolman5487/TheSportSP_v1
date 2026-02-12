@@ -31,6 +31,7 @@
 		15893F392F322E92002E1221 /* ColorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F382F322E92002E1221 /* ColorConfig.swift */; };
 		15893F482F339231002E1221 /* MainHomeBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F472F339231002E1221 /* MainHomeBaseViewController.swift */; };
 		15893F4E2F363D93002E1221 /* MainHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F4D2F363D93002E1221 /* MainHomeViewController.swift */; };
+		15F15F8A2F3B9A7E00FB119C /* SportsDBListModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F15F892F3B9A7E00FB119C /* SportsDBListModels.swift */; };
 		15893F522F363E00002E1221 /* String+TextShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15893F512F363E00002E1221 /* String+TextShadow.swift */; };
 		15F15F862F3B83D300FB119C /* MainHomeOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F15F852F3B83D300FB119C /* MainHomeOptionCell.swift */; };
 		15F15F882F3B866800FB119C /* MainHomeOptionsContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F15F872F3B866800FB119C /* MainHomeOptionsContainerCell.swift */; };
@@ -63,6 +64,7 @@
 		15893F512F363E00002E1221 /* String+TextShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+TextShadow.swift"; sourceTree = "<group>"; };
 		15F15F852F3B83D300FB119C /* MainHomeOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeOptionCell.swift; sourceTree = "<group>"; };
 		15F15F872F3B866800FB119C /* MainHomeOptionsContainerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeOptionsContainerCell.swift; sourceTree = "<group>"; };
+		15F15F892F3B9A7E00FB119C /* SportsDBListModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsDBListModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -195,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				154B07F82F379577002C585E /* SportsDBEventModel.swift */,
+				15F15F892F3B9A7E00FB119C /* SportsDBListModels.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -451,6 +454,7 @@
 				154B07F12F378933002C585E /* CarouselDepthEffect.swift in Sources */,
 				154B07F22F378933002C585E /* CarouselView.swift in Sources */,
 				154B07EE2F371367002C585E /* MainHomeCarouselCell.swift in Sources */,
+				15F15F8A2F3B9A7E00FB119C /* SportsDBListModels.swift in Sources */,
 				15893F482F339231002E1221 /* MainHomeBaseViewController.swift in Sources */,
 				15893EE82F1D26C6002E1221 /* CustomTabBarController.swift in Sources */,
 				15893F392F322E92002E1221 /* ColorConfig.swift in Sources */,
